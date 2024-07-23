@@ -3,6 +3,7 @@ package uce.edu.ec.view;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import uce.edu.ec.container.Container;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -15,7 +16,8 @@ public class CrearCuenta extends JFrame {
 
     @Autowired
     private ApplicationContext context;
-
+    @Autowired
+    private Container container;
     private JLabel jLabel1;
     private JLabel jLabel2;
     private JLabel jLabel3;
@@ -100,8 +102,15 @@ public class CrearCuenta extends JFrame {
         jButton2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                // Aquí deberías invocar el método de Container para registrar un nuevo cliente
-                // container.registerCustomer(jTextField1.getText(), jTextField2.getText(), jTextField3.getText());
+                try {
+                    container.registerCustomer(jTextField1.getText(), jTextField2.getText(), jTextField3.getText());
+                    JOptionPane.showMessageDialog(null, "Cuenta creada exitosamente");
+
+                    // Limpiar los campos de texto después de crear la cuenta
+                    clearFields();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -130,7 +139,7 @@ public class CrearCuenta extends JFrame {
                                                 .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                 .addGap(74, 74, 74)
                                                 .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                                        .addContainerGap(123, Short.MAX_VALUE))
+                                .addContainerGap(123, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -170,4 +179,12 @@ public class CrearCuenta extends JFrame {
         pack();
         setLocationRelativeTo(null); // Centra la ventana
     }
+
+    private void clearFields() {
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
+    }
 }
+
+

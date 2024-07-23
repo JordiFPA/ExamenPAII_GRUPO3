@@ -14,11 +14,20 @@ public class CustomerService {
     @Autowired
     CustomerRepository customerRepository;
 
-    public void saveCustomer(Customer customer) {
+    public void saveCustomer(Customer customer) throws Exception {
+        if (customerRepository.findByEmail(customer.getEmail()).isPresent()) {
+            throw new Exception("El usuario ya existe");
+        }
         customerRepository.save(customer);
     }
+
     public Optional<Customer> findCustomer(long id) {
-      return customerRepository.findById(id);
+        return customerRepository.findById(id);
     }
+
+    public Customer getCustomerById(long id) {
+        return customerRepository.findById(id).orElse(null);
+    }
+
 
 }
