@@ -14,17 +14,14 @@ public class Product {
     @Column
     private double price;
     @Column
-    private String material;
+    private int material;
     @OneToMany(mappedBy = "product")
     private List<Order> order;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<Process> procesos;
 
     public Product() {
     }
 
-    public Product(double price, String name, String material) {
+    public Product(double price, String name, long id, int material) {
         this.price = price;
         this.name = name;
         this.id = id;
@@ -55,19 +52,11 @@ public class Product {
         this.price = price;
     }
 
-    public String getMaterial() {
+    public int getMaterial() {
         return material;
     }
 
-    public void setMaterial(String material) {
+    public void setMaterial(int material) {
         this.material = material;
-    }
-
-    public List<Process> getProcesos() {
-        return procesos;
-    }
-
-    public void setProcesos(List<Process> procesos) {
-        this.procesos = procesos;
     }
 }
