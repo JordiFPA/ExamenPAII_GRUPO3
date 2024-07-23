@@ -1,18 +1,24 @@
 package uce.edu.ec.service;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import uce.edu.ec.model.Customer;
+import uce.edu.ec.repository.CustomerRepository;
 
-import java.util.List;
+import java.util.Optional;
 
-public interface CustomerService {
+@Service
 
-    Customer saveCustomer(Customer customer);
+public class CustomerService {
+    @Autowired
+    CustomerRepository customerRepository;
 
-    Customer getCustomerById(Long id);
+    public void saveCustomer(Customer customer) {
+        customerRepository.save(customer);
+    }
+    public Optional<Customer> findCustomer(long id) {
+      return customerRepository.findById(id);
+    }
 
-    List<Customer> getAllCustomers();
-
-    Customer updateCustomer(Long id, Customer customer);
-
-    void deleteCustomer(Long id);
 }
