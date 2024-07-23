@@ -3,6 +3,8 @@ package uce.edu.ec.view;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import uce.edu.ec.container.Container;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -24,7 +26,9 @@ public class CrearCuenta extends JFrame {
     private JButton jButton2;
 
     @Autowired
-    private ApplicationContext context;  // Inyecta el ApplicationContext de Spring
+    private ApplicationContext context;
+    @Autowired// Inyecta el ApplicationContext de Spring
+    private Container container;
 
     public CrearCuenta() {
         initComponents();
@@ -46,7 +50,7 @@ public class CrearCuenta extends JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         Dimension buttonSize = new Dimension(500, 50);
-        Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246,195,67), 2);
+        Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 153));
 
@@ -73,6 +77,9 @@ public class CrearCuenta extends JFrame {
         jButton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
+                // Limpiar los campos de texto
+                clearFields();
+
                 // Crear una nueva instancia de la ventana de Login y mostrarla
                 Login login = context.getBean(Login.class);
                 login.setVisible(true);
@@ -93,10 +100,17 @@ public class CrearCuenta extends JFrame {
         jButton2.setOpaque(true);
         jButton2.setBorder(buttonBorder1);
         jButton2.setForeground(Color.BLACK);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // Aquí deberías invocar el método de Container para registrar un nuevo cliente
-                // container.registerCustomer(jTextField1.getText(), jTextField2.getText(), jTextField3.getText());
+        jButton2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    container.registerCustomer(jTextField1.getText(), jTextField2.getText(), jTextField3.getText());
+                    JOptionPane.showMessageDialog(null, "Cuenta creada exitosamente");
+
+                    // Limpiar los campos de texto después de crear la cuenta
+                    clearFields();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -171,5 +185,11 @@ public class CrearCuenta extends JFrame {
         );
 
         pack();
+    }
+
+    private void clearFields() {
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
     }
 }
