@@ -4,7 +4,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import uce.edu.ec.model.Customer;
+import uce.edu.ec.model.Order;
+import uce.edu.ec.model.Process;
+import uce.edu.ec.model.Product;
 import uce.edu.ec.view.Principal;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 @SpringBootApplication
@@ -20,6 +27,9 @@ public class ProyectoFinalApplication {
                 frame.setVisible(true);
             }
         });
+
+
+
 
     }
 

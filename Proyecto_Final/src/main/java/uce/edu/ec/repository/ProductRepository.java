@@ -2,8 +2,8 @@ package uce.edu.ec.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import uce.edu.ec.model.Customer;
-
+import org.springframework.stereotype.Service;
+import uce.edu.ec.model.Product;
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, Long> {
+public interface ProductRepository extends JpaRepository<Product,Long> {
 }

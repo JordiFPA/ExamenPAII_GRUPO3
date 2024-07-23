@@ -23,12 +23,18 @@ public class Container {
         this.customer = customer;
     }
 
-    public void registerCustomer(String name, String email, String password) throws Exception {
+    public void registerCustomer(String name, String email, String password) {
         Customer customer = new Customer();
         customer.setName(name);
         customer.setEmail(email);
         customer.setPassword(password);
         customerS.saveCustomer(customer);
     }
+
+
+
+
+
+
 }
 
