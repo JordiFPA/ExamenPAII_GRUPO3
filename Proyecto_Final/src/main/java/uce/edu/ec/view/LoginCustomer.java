@@ -1,10 +1,8 @@
 package uce.edu.ec.view;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import uce.edu.ec.container.Container;
-
+import org.springframework.context.ApplicationContext;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -12,106 +10,99 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 @Component
-public class CrearCuenta extends JFrame {
+public class LoginCustomer extends JFrame {
 
     @Autowired
     private ApplicationContext context;
-    @Autowired
-    private Container container;
-    private JLabel jLabel1;
-    private JLabel jLabel2;
-    private JLabel jLabel3;
-    private JLabel jLabel4;
-    private JTextField jTextField1;
-    private JTextField jTextField2;
-    private JTextField jTextField3;
+
     private JButton jButton1;
     private JButton jButton2;
+    private JLabel jLabel1;
+    private JLabel jLabel2;
+    private JLabel jLabel4;
     private JPanel jPanel1;
+    private JPasswordField jPasswordField1;
+    private JTextField jTextField1;
+    private JButton jButton3;
 
-    public CrearCuenta() {
+    public LoginCustomer() throws HeadlessException {
         initComponents();
-        setSize(855, 800);
-        setLocationRelativeTo(null);
     }
 
     private void initComponents() {
+
         jPanel1 = new JPanel();
         jLabel1 = new JLabel();
         jLabel2 = new JLabel();
-        jLabel3 = new JLabel();
-        jLabel4 = new JLabel();
-        jTextField1 = new JTextField();
-        jTextField2 = new JTextField();
-        jTextField3 = new JTextField();
         jButton1 = new JButton();
         jButton2 = new JButton();
+        jTextField1 = new JTextField();
+        jLabel4 = new JLabel();
+        jPasswordField1 = new JPasswordField();
+        jButton3 = new JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new Color(255, 255, 153));
 
-        jLabel1.setFont(new Font("Segoe UI", Font.BOLD, 36));
+        jLabel1.setFont(new Font("Segoe UI", Font.BOLD, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-        jLabel1.setText("CREAR CUENTA");
+        jLabel1.setText("BIENVENIDOS");
 
-        jLabel2.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        jLabel2.setText("Nombre:");
-
-        jLabel3.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        jLabel3.setText("Contraseña:");
-
-        jLabel4.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        jLabel4.setText("eMail:");
-
-        jTextField1.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        jTextField2.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        jTextField3.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-
-        Dimension textFieldSize = new Dimension(367, 38);
-        jTextField1.setPreferredSize(textFieldSize);
-        jTextField2.setPreferredSize(textFieldSize);
-        jTextField3.setPreferredSize(textFieldSize);
+        jLabel2.setFont(new Font("Segoe UI", Font.BOLD, 18)); // NOI18N
+        jLabel2.setText("CONTRASEÑA:");
 
         // Crear bordes de colores
-        Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);
+        Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246,195,67), 2);
 
-        jButton1.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        jButton1.setText("Volver");
-        jButton1.setPreferredSize(new Dimension(150, 60));
-        jButton1.setBackground(new Color(255, 255, 255));
-        jButton1.setOpaque(true);
+
+        jButton1.setFont(new Font("Segoe UI", Font.BOLD, 14)); // NOI18N
+        jButton1.setText("Crear cuenta");
+        jButton1.setPreferredSize(new Dimension(150, 60)); // Establece un tamaño preferido
+        jButton1.setBackground(new Color(255, 255, 255)); // Color de fondo azul
+        jButton1.setOpaque(true); // Asegura que el fondo sea visible
         jButton1.setBorder(buttonBorder1);
         jButton1.setForeground(Color.BLACK);
         jButton1.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent evt) {
-                LoginCustomer login = context.getBean(LoginCustomer.class);
-                login.setVisible(true);
+            public void actionPerformed(ActionEvent e) {
+                CrearCuenta crearCuenta = context.getBean(CrearCuenta.class);
+                crearCuenta.setVisible(true);
                 dispose();
             }
         });
 
-        jButton2.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        jButton2.setText("Crear");
+        jButton2.setFont(new Font("Segoe UI", Font.BOLD, 14)); // NOI18N
+        jButton2.setText("Ingresar");
         jButton2.setPreferredSize(new Dimension(150, 60));
         jButton2.setBackground(new Color(255, 255, 255));
-        jButton2.setOpaque(true);
+        jButton2.setOpaque(true); // Asegura que el fondo sea visible
         jButton2.setBorder(buttonBorder1);
         jButton2.setForeground(Color.BLACK);
-        jButton2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                try {
-                    container.registerCustomer(jTextField1.getText(), jTextField2.getText(), jTextField3.getText());
-                    JOptionPane.showMessageDialog(null, "Cuenta creada exitosamente");
+        jButton2.addActionListener(evt -> {
+            FrameCustomer frameCustomer = context.getBean(FrameCustomer.class);
+            frameCustomer.setSize(getSize());
+            frameCustomer.setLocationRelativeTo(null);
+            frameCustomer.setVisible(true);
+            dispose();
+        });
 
-                    // Limpiar los campos de texto después de crear la cuenta
-                    clearFields();
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
+        jLabel4.setFont(new Font("Segoe UI", Font.BOLD, 18)); // NOI18N
+        jLabel4.setText("USUARIO:");
+
+        jButton3.setFont(new Font("Segoe UI", Font.BOLD, 18)); // NOI18N
+        jButton3.setText("Volver");
+        jButton3.setPreferredSize(new Dimension(150, 60));
+        jButton3.setBackground(new Color(255, 255, 255));
+        jButton3.setOpaque(true); // Asegura que el fondo sea visible
+        jButton3.setBorder(buttonBorder1);
+        jButton3.setForeground(Color.BLACK);
+        jButton3.addActionListener(evt -> {
+            Principal principal = context.getBean(Principal.class);
+            principal.setSize(getSize());
+            principal.setLocationRelativeTo(null);
+            principal.setVisible(true);
+            dispose();
         });
 
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
@@ -127,18 +118,18 @@ public class CrearCuenta extends JFrame {
                                                 .addGap(113, 113, 113)
                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                         .addComponent(jLabel4)
-                                                        .addComponent(jLabel3)
                                                         .addComponent(jLabel2))
                                                 .addGap(32, 32, 32)
                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                                        .addComponent(jTextField2, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
-                                                        .addComponent(jTextField3)
-                                                        .addComponent(jTextField1)))
+                                                        .addComponent(jTextField1, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                                                        .addComponent(jPasswordField1)))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addGap(164, 164, 164)
                                                 .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                 .addGap(74, 74, 74)
-                                                .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addGap(51, 51, 51)
+                                                .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
                                 .addContainerGap(123, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -149,19 +140,16 @@ public class CrearCuenta extends JFrame {
                                 .addGap(49, 49, 49)
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel4)
-                                        .addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
-                                .addGap(67, 67, 67)
-                                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel3)
-                                        .addComponent(jTextField3, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
                                 .addGap(67, 67, 67)
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel2)
-                                        .addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jPasswordField1, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGap(83, 83, 83))
         );
 
@@ -179,12 +167,4 @@ public class CrearCuenta extends JFrame {
         pack();
         setLocationRelativeTo(null); // Centra la ventana
     }
-
-    private void clearFields() {
-        jTextField1.setText("");
-        jTextField2.setText("");
-        jTextField3.setText("");
-    }
 }
-
-

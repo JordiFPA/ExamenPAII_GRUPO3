@@ -60,7 +60,7 @@ public class Principal extends JFrame {
         jButton1.setFocusPainted(false);
         jButton1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                Login  login = context.getBean(Login.class);
+                LoginCustomer login = context.getBean(LoginCustomer.class);
                 login.setSize(getSize());
                 login.setLocationRelativeTo(null);
                 login.setVisible(true);
@@ -77,10 +77,10 @@ public class Principal extends JFrame {
         jButton2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Login login = context.getBean(Login.class);
-                login.setSize(getSize());
-                login.setLocationRelativeTo(null);
-                login.setVisible(true);
+                LoginAdmin loginA = context.getBean(LoginAdmin.class);
+                loginA.setSize(getSize());
+                loginA.setLocationRelativeTo(null);
+                loginA.setVisible(true);
                 dispose();
             }
         });

@@ -2,32 +2,29 @@ package uce.edu.ec.model;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
+
 @Entity
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     @Column
     private String name;
-
     @Column
     private double price;
-
     @Column
     private int material;
-
-    @ManyToMany(mappedBy = "products")
-    private List<Order> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "product")
+    private List<Order> order;
 
     public Product() {
     }
 
-    public Product(double price, String name, int material) {
+    public Product(double price, String name, long id, int material) {
         this.price = price;
         this.name = name;
+        this.id = id;
         this.material = material;
     }
 
@@ -61,13 +58,5 @@ public class Product {
 
     public void setMaterial(int material) {
         this.material = material;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
     }
 }
