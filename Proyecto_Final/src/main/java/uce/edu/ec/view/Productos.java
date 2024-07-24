@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +34,9 @@ public class Productos extends JFrame {
     private JTable jTable2;
     private JTextField jTextField1;
     private JPanel mainPanel;
+    private String producto = "";
+    private String Material;
+    private DefaultTableModel tableModel;
 
     public Productos() {
         initComponents();
@@ -84,6 +88,12 @@ public class Productos extends JFrame {
         jButton1.setOpaque(true);
         jButton1.setBorder(buttonBorder);
         jButton1.setForeground(Color.BLACK);
+        jButton1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                producto = "SILLA";
+            }
+        });
 
         jButton2.setText("ESCRITORIO");
         jButton2.setPreferredSize(buttonSize);
@@ -91,6 +101,12 @@ public class Productos extends JFrame {
         jButton2.setOpaque(true);
         jButton2.setBorder(buttonBorder);
         jButton2.setForeground(Color.BLACK);
+        jButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                producto = "ESCRITORIO";
+            }
+        });
 
         jButton3.setText("ARMARIO");
         jButton3.setPreferredSize(buttonSize);
@@ -98,6 +114,12 @@ public class Productos extends JFrame {
         jButton3.setOpaque(true);
         jButton3.setBorder(buttonBorder);
         jButton3.setForeground(Color.BLACK);
+        jButton3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                producto = "ARMARIO";
+            }
+        });
 
         jButton4.setText("CAMA");
         jButton4.setPreferredSize(buttonSize);
@@ -105,14 +127,21 @@ public class Productos extends JFrame {
         jButton4.setOpaque(true);
         jButton4.setBorder(buttonBorder);
         jButton4.setForeground(Color.BLACK);
+        jButton4.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                producto = "CAMA";
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 3, 16)); // NOI18N
         jLabel2.setText("Seleccionar Material:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE", "MADERA", "METAL", " " }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE", "MADERA", "METAL", "PLASTICO" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // Acción del combo box
+                    jComboBox1ActionPerformed(evt);
             }
         });
 
@@ -121,14 +150,12 @@ public class Productos extends JFrame {
 
         jTextField1.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-                new Object [][] {
-                        {null, null, null}
-                },
-                new String [] {
-                        "NOMBRE", "MATERIAL", "CANTIDAD"
-                }
-        ));
+        tableModel = new DefaultTableModel(
+                new Object[][] {},
+                new String[] { "NOMBRE", "MATERIAL", "CANTIDAD" }
+        );
+
+        jTable2.setModel(tableModel);
         jTable2.setUpdateSelectionOnSort(false);
         jScrollPane2.setViewportView(jTable2);
 
@@ -255,4 +282,24 @@ public class Productos extends JFrame {
 
         pack();
     }
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {
+        String selectedItem = (String) jComboBox1.getSelectedItem();
+        switch (selectedItem) {
+            case "MADERA":
+                Material = "MADERA";
+                break;
+            case "METAL":
+                Material = "METAL";
+                break;
+            case "PLASTICO":
+                Material = "PLASTICO";
+                break;
+            default:
+                Material = null; //
+                break;
+        }
+    }
+
+
 }
