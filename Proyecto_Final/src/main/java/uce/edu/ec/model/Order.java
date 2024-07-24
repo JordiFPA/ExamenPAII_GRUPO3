@@ -1,27 +1,37 @@
 package uce.edu.ec.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Table(name = "Orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    private long id;
+
     @ManyToOne
     @JoinColumn(name = "CustomerID", nullable = false)
     private Customer customer;
-    @ManyToOne
-    @JoinColumn(name = "ProductID", nullable = false)
-    private Product product;
+
+    @ManyToMany
+    @JoinTable(
+            name = "Order_Product",
+            joinColumns = @JoinColumn(name = "OrderID"),
+            inverseJoinColumns = @JoinColumn(name = "ProductID")
+    )
+    private List<Product> products = new ArrayList<>();
+
     @Column
     private String status;
 
     public Order() {
     }
-    public Order(Customer customer, Product product, String status) {
+
+    public Order(Customer customer, String status) {
         this.customer = customer;
-        this.product = product;
         this.status = status;
     }
 
@@ -49,11 +59,15 @@ public class Order {
         this.customer = customer;
     }
 
-    public Product getProduct() {
-        return product;
+    public List<Product> getProducts() {
+        return products;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public void addProduct(Product product) {
+        this.products.add(product);
     }
 }

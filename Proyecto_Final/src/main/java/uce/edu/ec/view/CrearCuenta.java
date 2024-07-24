@@ -10,6 +10,22 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+import uce.edu.ec.container.Container;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class CrearCuenta extends JFrame {
@@ -23,11 +39,12 @@ public class CrearCuenta extends JFrame {
     private JLabel jLabel3;
     private JLabel jLabel4;
     private JTextField jTextField1;
-    private JTextField jTextField2;
+    private JPasswordField jPasswordField;
     private JTextField jTextField3;
     private JButton jButton1;
     private JButton jButton2;
     private JPanel jPanel1;
+    private JCheckBox showPasswordCheckBox;
 
     public CrearCuenta() {
         initComponents();
@@ -42,10 +59,11 @@ public class CrearCuenta extends JFrame {
         jLabel3 = new JLabel();
         jLabel4 = new JLabel();
         jTextField1 = new JTextField();
-        jTextField2 = new JTextField();
+        jPasswordField = new JPasswordField();
         jTextField3 = new JTextField();
         jButton1 = new JButton();
         jButton2 = new JButton();
+        showPasswordCheckBox = new JCheckBox("Mostrar Contraseña");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -59,18 +77,32 @@ public class CrearCuenta extends JFrame {
         jLabel2.setText("Nombre:");
 
         jLabel3.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        jLabel3.setText("Contraseña:");
+        jLabel3.setText("Email:");
 
         jLabel4.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        jLabel4.setText("eMail:");
+        jLabel4.setText("Contraseña:");
 
         jTextField1.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-        jTextField2.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        jPasswordField.setFont(new Font("Segoe UI", Font.PLAIN, 18));
         jTextField3.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+
+        PlainDocument doc = (PlainDocument) jTextField1.getDocument();
+        doc.setDocumentFilter(new DocumentFilter() {
+            Pattern regEx = Pattern.compile("[a-zA-Z]*");
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                Matcher matcher = regEx.matcher(text);
+                if (!matcher.matches()) {
+                    return;
+                }
+                super.replace(fb, offset, length, text, attrs);
+            }
+        });
 
         Dimension textFieldSize = new Dimension(367, 38);
         jTextField1.setPreferredSize(textFieldSize);
-        jTextField2.setPreferredSize(textFieldSize);
+        jPasswordField.setPreferredSize(textFieldSize);
         jTextField3.setPreferredSize(textFieldSize);
 
         // Crear bordes de colores
@@ -86,7 +118,8 @@ public class CrearCuenta extends JFrame {
         jButton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                LoginCustomer login = context.getBean(LoginCustomer.class);
+                clearFields();
+                Login login = context.getBean(Login.class);
                 login.setVisible(true);
                 dispose();
             }
@@ -103,13 +136,25 @@ public class CrearCuenta extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
-                    container.registerCustomer(jTextField1.getText(), jTextField2.getText(), jTextField3.getText());
+                    validateFields();
+                    container.registerCustomer(jTextField1.getText(), jTextField3.getText(), new String(jPasswordField.getPassword()));
                     JOptionPane.showMessageDialog(null, "Cuenta creada exitosamente");
 
                     // Limpiar los campos de texto después de crear la cuenta
                     clearFields();
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        showPasswordCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (showPasswordCheckBox.isSelected()) {
+                    jPasswordField.setEchoChar((char) 0);
+                } else {
+                    jPasswordField.setEchoChar('*');
                 }
             }
         });
@@ -131,14 +176,17 @@ public class CrearCuenta extends JFrame {
                                                         .addComponent(jLabel2))
                                                 .addGap(32, 32, 32)
                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                                        .addComponent(jTextField2, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                                                        .addComponent(jPasswordField, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
                                                         .addComponent(jTextField3)
                                                         .addComponent(jTextField1)))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addGap(164, 164, 164)
                                                 .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                 .addGap(74, 74, 74)
-                                                .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(313, 313, 313)
+                                                .addComponent(showPasswordCheckBox)))
                                 .addContainerGap(123, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -148,16 +196,18 @@ public class CrearCuenta extends JFrame {
                                 .addComponent(jLabel1)
                                 .addGap(49, 49, 49)
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel4)
-                                        .addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
-                                .addGap(67, 67, 67)
-                                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel3)
-                                        .addComponent(jTextField3, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE))
-                                .addGap(67, 67, 67)
-                                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel2)
                                         .addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
+                                .addGap(49, 49, 49)
+                                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel3)
+                                        .addComponent(jTextField3, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
+                                .addGap(49, 49, 49)
+                                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel4)
+                                        .addComponent(jPasswordField, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE))
+                                .addGap(67, 67, 67)
+                                .addComponent(showPasswordCheckBox)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -180,11 +230,23 @@ public class CrearCuenta extends JFrame {
         setLocationRelativeTo(null); // Centra la ventana
     }
 
+    private void validateFields() throws Exception {
+        if (jTextField1.getText().isBlank() || jPasswordField.getPassword().length == 0 || jTextField3.getText().isBlank()) {
+            throw new Exception("Todos los campos son obligatorios");
+        }
+
+        if (!jTextField1.getText().matches("[a-zA-Z]+")) {
+            throw new Exception("El nombre solo puede contener letras");
+        }
+
+        if (!jTextField3.getText().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new Exception("El email no es válido");
+        }
+    }
+
     private void clearFields() {
         jTextField1.setText("");
-        jTextField2.setText("");
+        jPasswordField.setText("");
         jTextField3.setText("");
     }
 }
-
-
