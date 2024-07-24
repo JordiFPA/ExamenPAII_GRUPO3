@@ -8,27 +8,24 @@ import java.util.List;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @Column
-    private String name;
-
-    @Column
     private double price;
-
-    @Column
-    private int material;
+    private String name;
+    private String material;
+    private int cantidad;
 
     @ManyToMany(mappedBy = "products")
-    private List<Order> orders = new ArrayList<>();
+    private List<Orden> ordens = new ArrayList<>();
 
     public Product() {
     }
 
-    public Product(double price, String name, int material) {
+    public Product(double price, String name, String material, int cantidad) {
         this.price = price;
         this.name = name;
         this.material = material;
+        this.cantidad = cantidad;
     }
 
     public long getId() {
@@ -55,19 +52,27 @@ public class Product {
         this.price = price;
     }
 
-    public int getMaterial() {
+    public String getMaterial() {
         return material;
     }
 
-    public void setMaterial(int material) {
+    public void setMaterial(String material) {
         this.material = material;
     }
 
-    public List<Order> getOrders() {
-        return orders;
+    public List<Orden> getOrders() {
+        return ordens;
     }
 
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
+    public void setOrders(List<Orden> ordens) {
+        this.ordens = ordens;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
     }
 }

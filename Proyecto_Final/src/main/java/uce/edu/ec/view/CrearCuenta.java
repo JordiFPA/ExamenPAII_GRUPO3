@@ -119,8 +119,8 @@ public class CrearCuenta extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 clearFields();
-                LoginCustomer loginCustomer = context.getBean(LoginCustomer.class);
-                loginCustomer.setVisible(true);
+                Login login = context.getBean(Login.class);
+                login.setVisible(true);
                 dispose();
             }
         });

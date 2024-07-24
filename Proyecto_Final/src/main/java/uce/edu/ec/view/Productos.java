@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import uce.edu.ec.container.Container;
 import uce.edu.ec.model.Product;
+import uce.edu.ec.service.ProductService;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -22,10 +23,12 @@ public class Productos extends JFrame {
     private ApplicationContext context;
     @Autowired
     private Container container;
+    @Autowired
+    private ProductService productService;
 
-    private JButton jButton1,jButton2, jButton3,jButton4,jButton5,jButton6,jButton7,jButton8,jButton9;
+    private JButton jButton1, jButton2, jButton3, jButton4, jButton5, jButton6, jButton7, jButton8, jButton9;
     private JComboBox<String> jComboBox1;
-    private JLabel jLabel1,jLabel2,jLabel3;
+    private JLabel jLabel1, jLabel2, jLabel3;
     private JScrollPane jScrollPane2;
     private JTable jTable2;
     private JTextField jTextField1;
@@ -73,7 +76,7 @@ public class Productos extends JFrame {
 
 
         Border buttonBorder = BorderFactory.createLineBorder(Color.WHITE, 2);
-        Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246,195,67), 2);
+        Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);
 
 
         Dimension buttonSize = new Dimension(200, 50);
@@ -128,17 +131,17 @@ public class Productos extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 producto = "CAMA";
-                
+
             }
         });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 3, 16)); // NOI18N
         jLabel2.setText("Seleccionar Material:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE", "MADERA", "METAL", "PLASTICO" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"SELECCIONE", "MADERA", "METAL", "PLASTICO"}));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    jComboBox1ActionPerformed(evt);
+                jComboBox1ActionPerformed(evt);
             }
         });
 
@@ -148,8 +151,8 @@ public class Productos extends JFrame {
         jTextField1.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
 
         tableModel = new DefaultTableModel(
-                new Object[][] {},
-                new String[] { "NOMBRE", "MATERIAL", "CANTIDAD" }
+                new Object[][]{},
+                new String[]{"NOMBRE", "MATERIAL", "CANTIDAD"}
         );
 
         jTable2.setModel(tableModel);
@@ -165,7 +168,7 @@ public class Productos extends JFrame {
         jButton5.setForeground(Color.BLACK);
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // Acción del botón
+                agregarProductoActionPerformed(evt);
             }
         });
 
@@ -184,6 +187,13 @@ public class Productos extends JFrame {
         jButton8.setOpaque(true);
         jButton8.setBorder(buttonBorder1);
         jButton8.setForeground(Color.BLACK);
+        jButton8.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              hacerPedidoActionPerformed(e);
+              System.out.print(container.getCurrentOrder().getStatus() + container.getCurrentOrder().getId());
+            }
+        });
 
         jButton9.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
         jButton9.setText("PRINCIPAL");
@@ -205,7 +215,6 @@ public class Productos extends JFrame {
             }
         });
 
-        // Configurar el diseño usando el panel principal
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
@@ -284,41 +293,52 @@ public class Productos extends JFrame {
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {
         material = (String) jComboBox1.getSelectedItem();
     }
+
     private void agregarProductoActionPerformed(java.awt.event.ActionEvent evt) {
         String cantidad = jTextField1.getText();
         if (!producto.isEmpty() && !material.equals("SELECCIONE") && !cantidad.isEmpty()) {
             tableModel.addRow(new Object[]{producto, material, cantidad});
-            producto = ""; // Reset product selection
-            jComboBox1.setSelectedIndex(0); // Reset material selection
-            jTextField1.setText(""); // Reset quantity field
+            producto = "";
+            jComboBox1.setSelectedIndex(0);
+            jTextField1.setText("");
         } else {
             JOptionPane.showMessageDialog(this, "Por favor seleccione un producto, material y cantidad.");
         }
     }
 
-    /* private void hacerPedidoActionPerformed(java.awt.event.ActionEvent evt) {
+
+    private void hacerPedidoActionPerformed(java.awt.event.ActionEvent evt) {
         int rowCount = tableModel.getRowCount();
         if (rowCount > 0) {
             List<Product> productList = new ArrayList<>();
             for (int i = 0; i < rowCount; i++) {
                 String nombre = (String) tableModel.getValueAt(i, 0);
                 String material = (String) tableModel.getValueAt(i, 1);
-                double precio = 0.0;
+                double precio = 0.0; // Ajusta el precio según corresponda
                 int cantidad = Integer.parseInt((String) tableModel.getValueAt(i, 2));
-                Product product = new Product(precio, material, cantidad);
+                Product product = new Product(precio, nombre, material, cantidad); // Ajusta los parámetros al constructor correcto
+
+                // Si el producto ya existe en la base de datos, obtén su ID
+                Product existingProduct = productService.getProductByNameAndMaterial(nombre, material); // Debes crear este método en ProductService y ProductRepository
+                if (existingProduct != null) {
+                    product.setId(existingProduct.getId());
+                } else {
+                    product = productService.saveProduct(product); // Guarda el producto y obtiene su ID
+                }
+
                 productList.add(product);
             }
+
             // Crear la orden usando el Container
-            container.createOrder(container.getCustomer().getId(),productList,"Pendiente");
-            JOptionPane.showMessageDialog(this, "Pedido realizado exitosamente.");
-            tableModel.setRowCount(0); // Limpiar la tabla después de realizar el pedido
+            try {
+                container.createOrder(container.getCustomer().getId(), productList, "Pendiente");
+                JOptionPane.showMessageDialog(this, "Pedido realizado exitosamente.");
+                tableModel.setRowCount(0); // Limpiar la tabla después de realizar el pedido
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al realizar el pedido: " + e.getMessage());
+            }
         } else {
             JOptionPane.showMessageDialog(this, "No hay productos en la lista para hacer el pedido.");
         }
-     */
-
-
-
-
-
+    }
 }

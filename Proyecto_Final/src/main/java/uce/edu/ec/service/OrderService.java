@@ -2,12 +2,10 @@ package uce.edu.ec.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uce.edu.ec.model.Customer;
-import uce.edu.ec.model.Order;
+import uce.edu.ec.model.Orden;
 import uce.edu.ec.model.Product;
 import uce.edu.ec.repository.OrderRepository;
-
 import java.util.List;
-
 @Service
 public class OrderService {
     @Autowired
@@ -19,45 +17,46 @@ public class OrderService {
     @Autowired
     private CustomerService customerService;
 
-    public Order saveOrder(Order order) {
-        return orderRepository.save(order);
+    public Orden saveOrder(Orden orden) {
+        return orderRepository.save(orden);
     }
 
-    public List<Order> getAllOrders() {
+    public List<Orden> getAllOrders() {
         return orderRepository.findAll();
     }
 
-    public Order getOrderById(long id) {
+    public Orden getOrderById(long id) {
         return orderRepository.findById(id).orElse(null);
     }
 
-    public Order createOrder(long customerId, List<Long> productIds, String status) {
+    public Orden createOrder(long customerId, List<Product> productList, String status) {
         Customer customer = customerService.getCustomerById(customerId);
         if (customer == null) {
-            return null;
+            throw new RuntimeException("Customer not found");
         }
 
-        // Crear la orden con el cliente y estado
-        Order order = new Order(customer, status);
-
-        // Obtener los productos por sus IDs y añadirlos a la orden
-        for (Long productId : productIds) {
-            Product product = productService.getProductById(productId);
-            if (product != null) {
-                order.addProduct(product);
+        Orden orden = new Orden();
+        orden.setCustomer(customer);
+        orden.setStatus(status);
+        for (Product product : productList) {
+            Product existingProduct = productService.getProductById(product.getId());
+            if (existingProduct == null) {
+                existingProduct = productService.saveProduct(product); // Save new product and get its ID
             }
+            orden.addProduct(existingProduct);
         }
 
-        return saveOrder(order);
+        return saveOrder(orden);
     }
 
-    public Order addProductToOrder(long orderId, long productId) {
-        Order order = getOrderById(orderId);
+
+    public Orden addProductToOrder(long orderId, long productId) {
+        Orden orden = getOrderById(orderId);
         Product product = productService.getProductById(productId);
 
-        if (order != null && product != null) {
-            order.addProduct(product);
-            return saveOrder(order);
+        if (orden != null && product != null) {
+            orden.addProduct(product);
+            return saveOrder(orden);
         }
 
         return null;

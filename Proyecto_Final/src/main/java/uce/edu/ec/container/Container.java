@@ -3,15 +3,14 @@ package uce.edu.ec.container;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uce.edu.ec.model.Customer;
-import uce.edu.ec.model.Order;
+import uce.edu.ec.model.Orden;
 import uce.edu.ec.model.Product;
 import uce.edu.ec.service.CustomerService;
 import uce.edu.ec.service.OrderService;
 import uce.edu.ec.service.ProductService;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 @Component
 public class Container {
     @Autowired
@@ -21,11 +20,12 @@ public class Container {
     @Autowired
     private ProductService productService;
     private Customer customer;
-    private Order currentOrder;
+    private Orden currentOrden;
     private List<Product> products;
 
     public Container() {
         customer = new Customer();
+        products = new ArrayList<>();
     }
 
     public void registerCustomer(String name, String email, String password) throws Exception {
@@ -36,23 +36,23 @@ public class Container {
         customerS.saveCustomer(customer);
     }
 
-    public void createOrder(long customerId, List<Long> productIds, String status) {
-        currentOrder = orderService.createOrder(customerId, productIds, status);
-        products.clear(); //
+    public void createOrder(long customerId, List<Product> productList, String status) {
+        currentOrden = orderService.createOrder(customerId, productList, status);
+        products.clear();
     }
 
     public void addProductToOrder(long productId) {
-        if (currentOrder != null) {
+        if (currentOrden != null) {
             Product product = productService.getProductById(productId);
             if (product != null) {
                 products.add(product);
-                orderService.addProductToOrder(currentOrder.getId(), productId);
+                orderService.addProductToOrder(currentOrden.getId(), productId);
             }
         }
     }
 
-    public Order getCurrentOrder() {
-        return currentOrder;
+    public Orden getCurrentOrder() {
+        return currentOrden;
     }
 
     public List<Product> getProducts() {
@@ -70,6 +70,4 @@ public class Container {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
-
 }
-
