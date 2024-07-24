@@ -44,7 +44,14 @@ public class CustomerService {
         return customerRepository.findById(id).orElse(null);
     }
 
-    public Optional<Customer> findCustomerByEmailAndPassword(String email, String password) {
-        return customerRepository.findByEmailAndPassword(email, password);
+    public Customer findCustomerByEmailAndPassword(String email, String password) throws Exception {
+        Optional<Customer> customer = customerRepository.findByEmail(email);
+        if (customer.isPresent() && customer.get().getPassword().equals(password)) {
+            return customer.get();
+        } else {
+            throw new Exception("Email o contraseña incorrectos");
+        }
     }
+
+
 }

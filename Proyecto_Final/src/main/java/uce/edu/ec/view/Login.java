@@ -3,7 +3,7 @@ package uce.edu.ec.view;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.context.ApplicationContext;
-import uce.edu.ec.service.CustomerService;
+import uce.edu.ec.container.Container;
 import uce.edu.ec.model.Customer;
 
 import javax.swing.*;
@@ -11,7 +11,6 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Optional;
 
 @Component
 public class Login extends JFrame {
@@ -20,7 +19,7 @@ public class Login extends JFrame {
     private ApplicationContext context;
 
     @Autowired
-    private CustomerService customerService;
+    private Container container;
 
     private JButton jButton1;
     private JButton jButton2;
@@ -60,7 +59,8 @@ public class Login extends JFrame {
         jLabel2.setText("CONTRASEÑA:");
 
         // Crear bordes de colores
-        Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);
+        Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246,195,67), 2);
+
 
         jButton1.setFont(new Font("Segoe UI", Font.BOLD, 14)); // NOI18N
         jButton1.setText("Crear cuenta");
@@ -89,9 +89,14 @@ public class Login extends JFrame {
             String email = jTextField1.getText();
             String password = new String(jPasswordField1.getPassword());
 
-            Optional<Customer> customerOpt = customerService.findCustomerByEmailAndPassword(email, password);
+            Customer customerOpt = null;
+            try {
+                customerOpt =  container.authenticateCustomer(email, password);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
-            if (customerOpt.isPresent()) {
+            if (customerOpt != null) {
                 Productos productos = context.getBean(Productos.class);
                 productos.setSize(getSize());
                 productos.setLocationRelativeTo(null);
@@ -101,6 +106,7 @@ public class Login extends JFrame {
                 JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error de autenticación", JOptionPane.ERROR_MESSAGE);
             }
         });
+
 
         jLabel4.setFont(new Font("Segoe UI", Font.BOLD, 18)); // NOI18N
         jLabel4.setText("USUARIO:");
@@ -142,9 +148,9 @@ public class Login extends JFrame {
                                                 .addGap(164, 164, 164)
                                                 .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                 .addGap(74, 74, 74)
-                                                .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                 .addGap(51, 51, 51)
-                                                .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
                                 .addContainerGap(123, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -162,9 +168,9 @@ public class Login extends JFrame {
                                         .addComponent(jPasswordField1, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGap(83, 83, 83))
         );
 
@@ -180,6 +186,6 @@ public class Login extends JFrame {
         );
 
         pack();
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(null); // Centra la ventana
     }
 }

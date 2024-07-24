@@ -10,6 +10,7 @@ import uce.edu.ec.service.OrderService;
 import uce.edu.ec.service.ProductService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class Container {
@@ -27,14 +28,6 @@ public class Container {
         customer = new Customer();
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
     public void registerCustomer(String name, String email, String password) throws Exception {
         Customer customer = new Customer();
         customer.setName(name);
@@ -45,7 +38,7 @@ public class Container {
 
     public void createOrder(long customerId, List<Long> productIds, String status) {
         currentOrder = orderService.createOrder(customerId, productIds, status);
-        products.clear(); // Limpiar la lista de productos al crear una nueva orden
+        products.clear(); //
     }
 
     public void addProductToOrder(long productId) {
@@ -65,7 +58,16 @@ public class Container {
     public List<Product> getProducts() {
         return products;
     }
+    public Customer authenticateCustomer(String email, String password) throws Exception {
+        return this.customer = customerS.findCustomerByEmailAndPassword(email, password);
+    }
+    public Customer getCustomer() {
+        return customer;
+    }
 
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
 }
 
