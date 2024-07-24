@@ -1,8 +1,11 @@
 package uce.edu.ec.view;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+import uce.edu.ec.container.Container;
+import uce.edu.ec.model.Customer;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -15,6 +18,9 @@ public class LoginCustomer extends JFrame {
     @Autowired
     private ApplicationContext context;
 
+    @Autowired
+    private Container container;
+
     private JButton jButton1;
     private JButton jButton2;
     private JLabel jLabel1;
@@ -22,6 +28,7 @@ public class LoginCustomer extends JFrame {
     private JLabel jLabel4;
     private JPanel jPanel1;
     private JPasswordField jPasswordField1;
+    private JCheckBox showPasswordCheckBox;
     private JTextField jTextField1;
     private JButton jButton3;
 
@@ -39,6 +46,7 @@ public class LoginCustomer extends JFrame {
         jTextField1 = new JTextField();
         jLabel4 = new JLabel();
         jPasswordField1 = new JPasswordField();
+        showPasswordCheckBox = new JCheckBox("Mostrar Contraseña");
         jButton3 = new JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -53,13 +61,12 @@ public class LoginCustomer extends JFrame {
         jLabel2.setText("CONTRASEÑA:");
 
         // Crear bordes de colores
-        Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246,195,67), 2);
-
+        Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);
 
         jButton1.setFont(new Font("Segoe UI", Font.BOLD, 14)); // NOI18N
         jButton1.setText("Crear cuenta");
         jButton1.setPreferredSize(new Dimension(150, 60)); // Establece un tamaño preferido
-        jButton1.setBackground(new Color(255, 255, 255)); // Color de fondo azul
+        jButton1.setBackground(new Color(255, 255, 255)); // Color de fondo blanco
         jButton1.setOpaque(true); // Asegura que el fondo sea visible
         jButton1.setBorder(buttonBorder1);
         jButton1.setForeground(Color.BLACK);
@@ -80,15 +87,40 @@ public class LoginCustomer extends JFrame {
         jButton2.setBorder(buttonBorder1);
         jButton2.setForeground(Color.BLACK);
         jButton2.addActionListener(evt -> {
-            FrameCustomer frameCustomer = context.getBean(FrameCustomer.class);
-            frameCustomer.setSize(getSize());
-            frameCustomer.setLocationRelativeTo(null);
-            frameCustomer.setVisible(true);
-            dispose();
+            String email = jTextField1.getText();
+            String password = new String(jPasswordField1.getPassword());
+
+            try {
+                Customer customerOpt = container.authenticateCustomer(email, password);
+
+                if (customerOpt != null) {
+                    FrameCustomer frameCustomer = context.getBean(FrameCustomer.class);
+                    frameCustomer.setSize(getSize());
+                    frameCustomer.setLocationRelativeTo(null);
+                    frameCustomer.setVisible(true);
+                    // Limpiar los campos de entrada
+                    jTextField1.setText("");
+                    jPasswordField1.setText("");
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Email o Contraseña incorrecta. Por favor, inténtelo de nuevo.", "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        showPasswordCheckBox.setBackground(new Color(255, 255, 153));
+        showPasswordCheckBox.addActionListener(e -> {
+            if (showPasswordCheckBox.isSelected()) {
+                jPasswordField1.setEchoChar((char) 0); // Muestra la contraseña
+            } else {
+                jPasswordField1.setEchoChar('*'); // Oculta la contraseña
+            }
         });
 
         jLabel4.setFont(new Font("Segoe UI", Font.BOLD, 18)); // NOI18N
-        jLabel4.setText("USUARIO:");
+        jLabel4.setText(" Email :");
 
         jButton3.setFont(new Font("Segoe UI", Font.BOLD, 18)); // NOI18N
         jButton3.setText("Volver");
@@ -122,7 +154,8 @@ public class LoginCustomer extends JFrame {
                                                 .addGap(32, 32, 32)
                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                                         .addComponent(jTextField1, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
-                                                        .addComponent(jPasswordField1)))
+                                                        .addComponent(jPasswordField1)
+                                                        .addComponent(showPasswordCheckBox)))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addGap(164, 164, 164)
                                                 .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -141,11 +174,13 @@ public class LoginCustomer extends JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel4)
                                         .addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
-                                .addGap(67, 67, 67)
+                                .addGap(27, 27, 27)
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel2)
                                         .addComponent(jPasswordField1, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(showPasswordCheckBox)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
