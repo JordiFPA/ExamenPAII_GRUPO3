@@ -147,4 +147,3 @@ public class LoginAdmin extends JFrame {
         setLocationRelativeTo(null); // Centra la ventana
     }
 }
-

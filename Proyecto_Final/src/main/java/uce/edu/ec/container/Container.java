@@ -11,6 +11,7 @@ import uce.edu.ec.service.ProductService;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Component
 public class Container {
     @Autowired
@@ -69,5 +70,9 @@ public class Container {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public List<Orden> getOrders() {
+        return orderService.getAllOrders();
     }
 }

@@ -196,7 +196,7 @@ public class Productos extends JFrame {
         });
 
         jButton9.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
-        jButton9.setText("PRINCIPAL");
+        jButton9.setText(" VOLVER ");
         jButton9.setPreferredSize(buttonSize);
         jButton9.setBackground(new Color(255, 255, 255));
         jButton9.setOpaque(true);
@@ -207,10 +207,10 @@ public class Productos extends JFrame {
         jButton9.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Principal principal = context.getBean(Principal.class);
-                principal.setSize(getSize());
-                principal.setLocationRelativeTo(null);
-                principal.setVisible(true);
+                FrameCustomer frameCustomer = context.getBean(FrameCustomer.class);
+                frameCustomer.setSize(getSize());
+                frameCustomer.setLocationRelativeTo(null);
+                frameCustomer.setVisible(true);
                 dispose();
             }
         });

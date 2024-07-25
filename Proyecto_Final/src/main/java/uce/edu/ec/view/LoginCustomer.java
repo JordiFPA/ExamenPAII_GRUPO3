@@ -90,6 +90,12 @@ public class LoginCustomer extends JFrame {
             String email = jTextField1.getText();
             String password = new String(jPasswordField1.getPassword());
 
+            // Verificar si los campos están llenos
+            if (email.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los datos.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             try {
                 Customer customerOpt = container.authenticateCustomer(email, password);
 

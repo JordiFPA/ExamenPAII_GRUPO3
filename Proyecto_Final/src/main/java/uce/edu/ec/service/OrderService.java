@@ -1,11 +1,14 @@
 package uce.edu.ec.service;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uce.edu.ec.model.Customer;
 import uce.edu.ec.model.Orden;
 import uce.edu.ec.model.Product;
 import uce.edu.ec.repository.OrderRepository;
+
 import java.util.List;
+
 @Service
 public class OrderService {
     @Autowired
@@ -48,7 +51,6 @@ public class OrderService {
 
         return saveOrder(orden);
     }
-
 
     public Orden addProductToOrder(long orderId, long productId) {
         Orden orden = getOrderById(orderId);
