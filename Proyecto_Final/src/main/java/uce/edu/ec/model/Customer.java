@@ -1,6 +1,7 @@
 package uce.edu.ec.model;
 
 import jakarta.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Customer {
@@ -8,10 +9,13 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
     @Column(name = "name")
     private String name;
+
     @Column(name = "password")
     private String password;
+
     @Column(name = "email")
     private String email;
 
@@ -63,8 +67,20 @@ public class Customer {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", score='" + email + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
-}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return id == customer.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}

@@ -34,12 +34,13 @@ public class FrameCustomer extends JFrame {
     private JLabel jLabel4;
     private JLabel jLabel5;
 
+    private Customer currentCustomer; // Campo para almacenar el cliente actual
+
     @Autowired
     public FrameCustomer(OrderService orderService, ApplicationContext context) {
         this.orderService = orderService;
         this.context = context;
         initComponents();
-        loadOrders();
     }
 
     private void initComponents() {
@@ -167,50 +168,59 @@ public class FrameCustomer extends JFrame {
 
     // Método para actualizar la información del cliente
     public void updateCustomerInfo(Customer customer) {
+        this.currentCustomer = customer; // Establecer el cliente actual
         jLabel2.setText("Hola " + customer.getName());
-        // Aquí puedes agregar más lógica si necesitas actualizar más información
+        loadOrders(); // Cargar las órdenes del cliente
     }
 
     private void loadOrders() {
-        List<Orden> orders = orderService.getAllOrders();
+        if (currentCustomer == null) {
+            JOptionPane.showMessageDialog(this, "No hay cliente autenticado.");
+            return;
+        }
+
+        List<Orden> orders = orderService.getOrdersByCustomer(currentCustomer.getId());
         tableModel.setRowCount(0); // Limpiar tabla
 
         for (Orden order : orders) {
-            String clientName = order.getCustomer() != null ? order.getCustomer().getName() : "Desconocido";
             String productNames = order.getProducts().stream()
                     .map(Product::getName)
                     .reduce((a, b) -> a + ", " + b)
                     .orElse("Ninguno");
             tableModel.addRow(new Object[]{
                     order.getId(),
-                    clientName,
+                    currentCustomer.getName(),
                     productNames,
                     order.getStatus()
             });
         }
     }
 
-    public void updateOrderTable() {
-        // Obtener los pedidos del cliente desde el servicio
-        List<Orden> orders = orderService.getAllOrders();
-        tableModel.setRowCount(0); // Limpiar tabla
+    private void refreshOrders() {
+        if (currentCustomer == null) {
+            JOptionPane.showMessageDialog(this, "No hay cliente autenticado.");
+            return;
+        }
 
+        // Obtener las órdenes del cliente actual
+        List<Orden> orders = orderService.getOrdersByCustomer(currentCustomer.getId());
+
+        // Limpiar la tabla para actualizar los datos
+        tableModel.setRowCount(0);
+
+        // Añadir las órdenes actualizadas a la tabla
         for (Orden order : orders) {
-            String clientName = order.getCustomer() != null ? order.getCustomer().getName() : "Desconocido";
             String productNames = order.getProducts().stream()
-
                     .map(Product::getName)
                     .reduce((a, b) -> a + ", " + b)
                     .orElse("Ninguno");
-
             tableModel.addRow(new Object[]{
                     order.getId(),
-                    clientName,
+                    currentCustomer.getName(),
                     productNames,
                     order.getStatus()
             });
         }
     }
-
 
 }
