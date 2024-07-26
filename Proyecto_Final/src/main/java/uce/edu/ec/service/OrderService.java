@@ -2,6 +2,7 @@ package uce.edu.ec.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uce.edu.ec.model.Customer;
 import uce.edu.ec.model.Orden;
 import uce.edu.ec.model.Product;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
+
     @Autowired
     private OrderRepository orderRepository;
 
@@ -25,10 +27,14 @@ public class OrderService {
         return orderRepository.save(orden);
     }
 
+    @Transactional(readOnly = true)
     public List<Orden> getAllOrders() {
         return orderRepository.findAll();
     }
-
+    @Transactional(readOnly = true)
+    public List<Orden> getOrdersByCustomer(Customer customer) {
+        return orderRepository.findByCustomer(customer);
+    }
     public Orden getOrderById(long id) {
         return orderRepository.findById(id).orElse(null);
     }

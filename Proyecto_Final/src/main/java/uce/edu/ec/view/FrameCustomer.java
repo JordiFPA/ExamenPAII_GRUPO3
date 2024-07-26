@@ -3,8 +3,9 @@ package uce.edu.ec.view;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import uce.edu.ec.container.Container;
 import uce.edu.ec.model.Customer;
+import uce.edu.ec.model.Orden;
+import uce.edu.ec.model.Product;
 import uce.edu.ec.service.OrderService;
 
 import javax.swing.*;
@@ -13,16 +14,13 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 @Component
 public class FrameCustomer extends JFrame {
 
-    @Autowired
-    private ApplicationContext context;
-    @Autowired
-    private Container container;
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
+    private final ApplicationContext context;
 
     private JButton btnRealizarPedido, btnSalir;
     private JTable tableOrders;
@@ -36,8 +34,12 @@ public class FrameCustomer extends JFrame {
     private JLabel jLabel4;
     private JLabel jLabel5;
 
-    public FrameCustomer() {
+    @Autowired
+    public FrameCustomer(OrderService orderService, ApplicationContext context) {
+        this.orderService = orderService;
+        this.context = context;
         initComponents();
+        loadOrders();
     }
 
     private void initComponents() {
@@ -168,4 +170,47 @@ public class FrameCustomer extends JFrame {
         jLabel2.setText("Hola " + customer.getName());
         // Aquí puedes agregar más lógica si necesitas actualizar más información
     }
+
+    private void loadOrders() {
+        List<Orden> orders = orderService.getAllOrders();
+        tableModel.setRowCount(0); // Limpiar tabla
+
+        for (Orden order : orders) {
+            String clientName = order.getCustomer() != null ? order.getCustomer().getName() : "Desconocido";
+            String productNames = order.getProducts().stream()
+                    .map(Product::getName)
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse("Ninguno");
+            tableModel.addRow(new Object[]{
+                    order.getId(),
+                    clientName,
+                    productNames,
+                    order.getStatus()
+            });
+        }
+    }
+
+    public void updateOrderTable() {
+        // Obtener los pedidos del cliente desde el servicio
+        List<Orden> orders = orderService.getAllOrders();
+        tableModel.setRowCount(0); // Limpiar tabla
+
+        for (Orden order : orders) {
+            String clientName = order.getCustomer() != null ? order.getCustomer().getName() : "Desconocido";
+            String productNames = order.getProducts().stream()
+
+                    .map(Product::getName)
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse("Ninguno");
+
+            tableModel.addRow(new Object[]{
+                    order.getId(),
+                    clientName,
+                    productNames,
+                    order.getStatus()
+            });
+        }
+    }
+
+
 }

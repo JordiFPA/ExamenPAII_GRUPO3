@@ -208,6 +208,7 @@ public class Productos extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 FrameCustomer frameCustomer = context.getBean(FrameCustomer.class);
+                frameCustomer.updateOrderTable();
                 frameCustomer.setSize(getSize());
                 frameCustomer.setLocationRelativeTo(null);
                 frameCustomer.setVisible(true);
