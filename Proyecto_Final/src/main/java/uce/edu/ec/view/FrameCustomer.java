@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import uce.edu.ec.container.Container;
+import uce.edu.ec.model.Customer;
 import uce.edu.ec.service.OrderService;
 
 import javax.swing.*;
@@ -160,5 +161,11 @@ public class FrameCustomer extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
+    }
+
+    // Método para actualizar la información del cliente
+    public void updateCustomerInfo(Customer customer) {
+        jLabel2.setText("Hola " + customer.getName());
+        // Aquí puedes agregar más lógica si necesitas actualizar más información
     }
 }

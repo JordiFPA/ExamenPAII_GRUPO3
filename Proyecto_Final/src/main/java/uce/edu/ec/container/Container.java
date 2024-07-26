@@ -15,17 +15,17 @@ import java.util.List;
 @Component
 public class Container {
     @Autowired
-    private CustomerService customerS;
+    private CustomerService customerService;
     @Autowired
     private OrderService orderService;
     @Autowired
     private ProductService productService;
+
     private Customer customer;
-    private Orden currentOrden;
+    private Orden currentOrder;
     private List<Product> products;
 
     public Container() {
-        customer = new Customer();
         products = new ArrayList<>();
     }
 
@@ -34,26 +34,30 @@ public class Container {
         customer.setName(name);
         customer.setEmail(email);
         customer.setPassword(password);
-        customerS.saveCustomer(customer);
+        customerService.saveCustomer(customer);
     }
 
     public void createOrder(long customerId, List<Product> productList, String status) {
-        currentOrden = orderService.createOrder(customerId, productList, status);
+        currentOrder = orderService.createOrder(customerId, productList, status);
         products.clear();
     }
 
     public void addProductToOrder(long productId) {
-        if (currentOrden != null) {
+        if (currentOrder != null) {
             Product product = productService.getProductById(productId);
             if (product != null) {
                 products.add(product);
-                orderService.addProductToOrder(currentOrden.getId(), productId);
+                orderService.addProductToOrder(currentOrder.getId(), productId);
             }
         }
     }
 
     public Orden getCurrentOrder() {
-        return currentOrden;
+        return currentOrder;
+    }
+
+    public List<Orden> getOrdersByCustomer(long customerId) {
+        return orderService.getOrdersByCustomer(customerId);
     }
 
     public List<Product> getProducts() {
@@ -61,7 +65,10 @@ public class Container {
     }
 
     public Customer authenticateCustomer(String email, String password) throws Exception {
-        return this.customer = customerS.findCustomerByEmailAndPassword(email, password);
+        Customer authenticatedCustomer = customerService.findCustomerByEmailAndPassword(email, password);
+        this.customer = authenticatedCustomer;
+        System.out.println("Cliente autenticado: " + (authenticatedCustomer != null ? authenticatedCustomer.getName() : "Nulo"));
+        return authenticatedCustomer;
     }
 
     public Customer getCustomer() {

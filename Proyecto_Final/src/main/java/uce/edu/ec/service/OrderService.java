@@ -8,6 +8,7 @@ import uce.edu.ec.model.Product;
 import uce.edu.ec.repository.OrderRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -31,6 +32,13 @@ public class OrderService {
     public Orden getOrderById(long id) {
         return orderRepository.findById(id).orElse(null);
     }
+
+    public List<Orden> getOrdersByCustomer(long customerId) {
+        return orderRepository.findAll().stream()
+                .filter(order -> order.getCustomer().getId() == customerId)
+                .collect(Collectors.toList());
+    }
+
 
     public Orden createOrder(long customerId, List<Product> productList, String status) {
         Customer customer = customerService.getCustomerById(customerId);

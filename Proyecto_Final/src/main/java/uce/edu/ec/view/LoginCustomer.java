@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import uce.edu.ec.container.Container;
 import uce.edu.ec.model.Customer;
+import uce.edu.ec.service.CustomerService;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -20,6 +21,9 @@ public class LoginCustomer extends JFrame {
 
     @Autowired
     private Container container;
+
+    @Autowired
+    private CustomerService customerService;
 
     private JButton jButton1;
     private JButton jButton2;
@@ -97,10 +101,11 @@ public class LoginCustomer extends JFrame {
             }
 
             try {
-                Customer customerOpt = container.authenticateCustomer(email, password);
-
-                if (customerOpt != null) {
+                Customer customer = customerService.findCustomerByEmailAndPassword(email, password);
+                if (customer != null) {
+                    container.setCustomer(customer); // Almacenar el cliente en el contenedor
                     FrameCustomer frameCustomer = context.getBean(FrameCustomer.class);
+                    frameCustomer.updateCustomerInfo(customer); // Actualizar la información del cliente en FrameCustomer
                     frameCustomer.setSize(getSize());
                     frameCustomer.setLocationRelativeTo(null);
                     frameCustomer.setVisible(true);
@@ -109,10 +114,10 @@ public class LoginCustomer extends JFrame {
                     jPasswordField1.setText("");
                     dispose();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Credenciales incorrectas.", "Error de autenticación", JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Email o Contraseña incorrecta. Por favor, inténtelo de nuevo.", "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de autenticación", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -206,6 +211,5 @@ public class LoginCustomer extends JFrame {
         );
 
         pack();
-        setLocationRelativeTo(null); // Centra la ventana
     }
 }
