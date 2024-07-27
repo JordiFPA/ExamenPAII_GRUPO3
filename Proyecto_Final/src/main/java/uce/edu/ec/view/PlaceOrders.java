@@ -32,10 +32,8 @@ public class PlaceOrders extends JFrame {
     private JPanel mainPanel;
     private JPanel tablePanel;
     private JPanel buttonPanel;
-    private JPanel progressPanel; // Nuevo panel para el progreso
-    private JLabel jLabel1, jLabel2, jLabel3, jLabel4, jLabel5;
+    private JLabel jLabel1,jLabel2,jLabel3,jLabel4,jLabel5;
     private JTextArea textArea;
-    private JProgressBar progressBar; // Barra de progreso
 
     @Autowired
     public PlaceOrders(OrderService orderService, ApplicationContext context) {
@@ -55,20 +53,6 @@ public class PlaceOrders extends JFrame {
         jLabel3 = new JLabel();
         jLabel4 = new JLabel();
         jLabel5 = new JLabel();
-
-        // Configurar la barra de progreso y el panel de progreso
-        progressBar = new JProgressBar(0, 100);
-        progressBar.setValue(0);
-        progressBar.setStringPainted(true);
-
-        JPanel progressPanel = new JPanel();
-        progressPanel.setLayout(new BorderLayout());
-        progressPanel.add(progressBar, BorderLayout.NORTH);
-
-        textArea = new JTextArea();
-        textArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        progressPanel.add(scrollPane, BorderLayout.CENTER);
 
         tableModel = new DefaultTableModel(
                 new Object[][]{},
@@ -113,10 +97,27 @@ public class PlaceOrders extends JFrame {
                     // Obtener la orden
                     Orden order = orderService.getOrderById(orderId);
                     if (order != null) {
-                        // Mostrar el panel de progreso en lugar de un JDialog
-                        progressPanel.setVisible(true);
+                        // Crear y mostrar el cuadro de diálogo de progreso en el hilo de eventos de Swing
+                        JDialog progressDialog = new JDialog(PlaceOrders.this, "Fabricando...", true);
+                        progressDialog.setLayout(new BorderLayout());
+
+                        // Crear y configurar la barra de progreso
+                        JProgressBar progressBar = new JProgressBar(0, 100);
                         progressBar.setValue(0);
-                        textArea.setText(""); // Limpiar el área de texto
+                        progressBar.setStringPainted(true);
+                        progressDialog.add(progressBar, BorderLayout.NORTH);
+
+                        // Configurar el JTextArea
+                        textArea = new JTextArea();
+                        textArea.setEditable(false);
+                        JScrollPane scrollPane = new JScrollPane(textArea);
+                        progressDialog.add(scrollPane, BorderLayout.CENTER);
+
+                        progressDialog.setSize(400, 300);
+                        progressDialog.setLocationRelativeTo(PlaceOrders.this);
+
+                        // Mostrar el cuadro de diálogo de progreso
+                        SwingUtilities.invokeLater(() -> progressDialog.setVisible(true));
 
                         // Ejecutar el proceso de fabricación en un hilo separado
                         new Thread(() -> {
@@ -130,12 +131,11 @@ public class PlaceOrders extends JFrame {
                                         }),
                                         progressBar);
 
-                                // Ocultar el panel de progreso cuando termine
-                                SwingUtilities.invokeLater(() -> progressPanel.setVisible(true));
+
                             } catch (Exception ex) {
                                 SwingUtilities.invokeLater(() -> {
                                     textArea.append("Error en el proceso de fabricación: " + ex.getMessage() + "\n");
-                                    progressPanel.setVisible(false);
+                                    progressDialog.dispose();
                                 });
                             }
                         }).start();
@@ -205,7 +205,6 @@ public class PlaceOrders extends JFrame {
         mainPanel.add(labelPanel, BorderLayout.NORTH);
         mainPanel.add(tablePanel, BorderLayout.CENTER);
         mainPanel.add(buttonPanel, BorderLayout.EAST);
-        mainPanel.add(progressPanel, BorderLayout.SOUTH); // Agregar el panel de progreso al sur
 
         getContentPane().add(mainPanel);
 
