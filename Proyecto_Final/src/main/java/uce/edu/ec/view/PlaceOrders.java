@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import uce.edu.ec.model.Customer;
+import uce.edu.ec.model.ManufacturingProcess;
 import uce.edu.ec.model.Orden;
 import uce.edu.ec.model.Product;
 import uce.edu.ec.service.OrderService;
@@ -97,6 +98,53 @@ public class PlaceOrders extends JFrame {
         btnFabricarPedido.setOpaque(true);
         btnFabricarPedido.setBorder(buttonBorder1);
         btnFabricarPedido.setForeground(Color.BLACK);
+        btnFabricarPedido.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Pedir el ID de la orden
+                String input = JOptionPane.showInputDialog(PlaceOrders.this, "Ingrese el ID de la orden a fabricar:");
+                if (input != null && !input.trim().isEmpty()) {
+                    try {
+                        long orderId = Long.parseLong(input.trim());
+                        // Obtener la orden
+                        Orden order = orderService.getOrderById(orderId);
+                        if (order != null) {
+                            // Crear un cuadro de diálogo para mostrar el progreso
+                            JDialog progressDialog = new JDialog(PlaceOrders.this, "Fabricando...", true);
+                            progressDialog.setLayout(new BorderLayout());
+                            JTextArea textArea = new JTextArea();
+                            textArea.setEditable(false);
+                            JScrollPane scrollPane = new JScrollPane(textArea);
+                            progressDialog.add(scrollPane, BorderLayout.CENTER);
+                            progressDialog.setSize(400, 300);
+                            progressDialog.setLocationRelativeTo(PlaceOrders.this);
+                            progressDialog.setVisible(true);
+
+                            // Crear una instancia de ManufacturingProcess con callback
+                            ManufacturingProcess manufacturingProcess = new ManufacturingProcess(
+                                    () -> {}, // Implementar procesos específicos aquí si es necesario
+                                    () -> {},
+                                    () -> {},
+                                    () -> {},
+                                    orderService,
+                                    status -> SwingUtilities.invokeLater(() -> textArea.append(status + "\n"))
+                            );
+
+                            // Ejecutar el proceso en un hilo separado
+                            new Thread(() -> {
+                                manufacturingProcess.executeProcess(orderId);
+                                manufacturingProcess.shutdown();
+                                SwingUtilities.invokeLater(() -> progressDialog.dispose()); // Cerrar el diálogo cuando termine
+                            }).start();
+                        } else {
+                            JOptionPane.showMessageDialog(PlaceOrders.this, "Orden no encontrada.");
+                        }
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(PlaceOrders.this, "ID de orden inválido. Por favor ingrese un número válido.");
+                    }
+                }
+            }
+        });
 
         btnEliminarPedido.setBackground(Color.WHITE);
         btnEliminarPedido.setOpaque(true);
