@@ -1,7 +1,5 @@
 package uce.edu.ec.interfaces;
-
-
 @FunctionalInterface
 public interface IPolishable {
-    void polish();
+    void polish(Runnable updateProgress);
 }

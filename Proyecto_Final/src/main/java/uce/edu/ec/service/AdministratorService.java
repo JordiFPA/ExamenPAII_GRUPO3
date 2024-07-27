@@ -13,8 +13,8 @@ public class AdministratorService {
     @Autowired
     private AdministratorRepository administratorRepository;
 
-    private final String DEFAULT_NAME = "adminxd";
-    private final String DEFAULT_PASSWORD = "adminxd";
+    private final String DEFAULT_NAME = "Byron";
+    private final String DEFAULT_PASSWORD = "aucas1945";
 
     public Administrator getAdministratorByNameAndPassword(String name, String password) throws Exception {
         if (name.equals(DEFAULT_NAME) && password.equals(DEFAULT_PASSWORD)) {

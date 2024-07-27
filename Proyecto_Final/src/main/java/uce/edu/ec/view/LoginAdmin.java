@@ -29,7 +29,6 @@ public class LoginAdmin extends JFrame {
     private JPasswordField jPasswordField1;
     private JTextField jTextField1;
     private JButton jButton3;
-    private JCheckBox showPasswordCheckBox;
 
     public LoginAdmin() throws HeadlessException {
         initComponents();
@@ -45,7 +44,6 @@ public class LoginAdmin extends JFrame {
         jLabel4 = new JLabel();
         jPasswordField1 = new JPasswordField();
         jButton3 = new JButton();
-        showPasswordCheckBox = new JCheckBox("Mostrar Contraseña");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -115,15 +113,6 @@ public class LoginAdmin extends JFrame {
             dispose();
         });
 
-        showPasswordCheckBox.setBackground(new Color(255, 255, 153));
-        showPasswordCheckBox.addActionListener(e -> {
-            if (showPasswordCheckBox.isSelected()) {
-                jPasswordField1.setEchoChar((char) 0); // Muestra la contraseña
-            } else {
-                jPasswordField1.setEchoChar('*'); // Oculta la contraseña
-            }
-        });
-
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -141,8 +130,7 @@ public class LoginAdmin extends JFrame {
                                                 .addGap(32, 32, 32)
                                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                                         .addComponent(jTextField1, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
-                                                        .addComponent(jPasswordField1)
-                                                        .addComponent(showPasswordCheckBox)))
+                                                        .addComponent(jPasswordField1)))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addGap(164, 164, 164)
                                                 .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -159,13 +147,11 @@ public class LoginAdmin extends JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel4)
                                         .addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
-                                .addGap(27, 27, 27)
+                                .addGap(67, 67, 67)
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel2)
                                         .addComponent(jPasswordField1, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(showPasswordCheckBox)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -187,3 +173,4 @@ public class LoginAdmin extends JFrame {
         setLocationRelativeTo(null); // Centra la ventana
     }
 }
+

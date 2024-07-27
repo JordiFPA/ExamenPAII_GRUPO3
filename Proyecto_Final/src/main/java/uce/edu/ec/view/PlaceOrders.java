@@ -3,6 +3,7 @@ package uce.edu.ec.view;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import uce.edu.ec.container.Container;
 import uce.edu.ec.model.Customer;
 import uce.edu.ec.model.ManufacturingProcess;
 import uce.edu.ec.model.Orden;
@@ -29,13 +30,11 @@ public class PlaceOrders extends JFrame {
     private JPanel mainPanel;
     private JPanel tablePanel;
     private JPanel buttonPanel;
-    private JLabel jLabel1;
-    private JLabel jLabel2;
-    private JLabel jLabel3;
-    private JLabel jLabel4;
-    private JLabel jLabel5;
+    private JLabel jLabel1,jLabel2,jLabel3,jLabel4,jLabel5;
     private JTextArea textArea;
 
+    @Autowired
+    Container container;
     @Autowired
     public PlaceOrders(OrderService orderService, ApplicationContext context) {
         this.orderService = orderService;
@@ -46,12 +45,9 @@ public class PlaceOrders extends JFrame {
     private void initComponents() {
         textArea = new JTextArea();
         textArea.setEditable(false);
-        // Inicialización de botones
         btnFabricarPedido = new JButton("Mandar a Fabricar");
         btnEliminarPedido = new JButton("Eliminar Pedido");
         btnSalir = new JButton("Salir");
-
-        // Inicialización de etiquetas
         jLabel1 = new JLabel();
         jLabel2 = new JLabel();
         jLabel3 = new JLabel();
@@ -64,24 +60,16 @@ public class PlaceOrders extends JFrame {
         );
         tableOrders = new JTable(tableModel);
         JScrollPane tableScrollPane = new JScrollPane(tableOrders);
-
-        // Establecer tamaño preferido para el JScrollPane con altura menor
-        tableScrollPane.setPreferredSize(new Dimension(500, 200)); // Ajustar tamaño aquí
-
-        // Configuración de jLabel1 con la imagen
-        jLabel1.setIcon(new ImageIcon(getClass().getResource("/logoProgra.jpg"))); // Asegúrate de que esta ruta sea correcta
-
-        // Configuración de jLabel2 y jLabel3
+        tableScrollPane.setPreferredSize(new Dimension(500, 200));
+        jLabel1.setIcon(new ImageIcon(getClass().getResource("/logoProgra.jpg")));
         jLabel2.setText("LISTA DE PEDIDOS");
         jLabel2.setBorder(BorderFactory.createEtchedBorder());
 
         jLabel3.setText(" ");
 
-        // Configuración de jLabel4 y jLabel5
         jLabel4.setText(" ");
         jLabel5.setText(" ");
 
-        // Hacer que los botones sean un poco más grandes
         Dimension buttonSize = new Dimension(220, 60); // Ajustar tamaño aquí
         btnFabricarPedido.setMinimumSize(buttonSize);
         btnFabricarPedido.setMaximumSize(buttonSize);
@@ -115,29 +103,43 @@ public class PlaceOrders extends JFrame {
                             // Crear un cuadro de diálogo para mostrar el progreso
                             JDialog progressDialog = new JDialog(PlaceOrders.this, "Fabricando...", true);
                             progressDialog.setLayout(new BorderLayout());
-                            JTextArea textArea = new JTextArea();
+
+                            // Crear y configurar la barra de progreso
+                            JProgressBar progressBar = new JProgressBar(0, 100);
+                            progressBar.setValue(0);
+                            progressBar.setStringPainted(true);
+                            progressDialog.add(progressBar, BorderLayout.NORTH);
+
+                            // Configurar el JTextArea
                             textArea.setEditable(false);
                             JScrollPane scrollPane = new JScrollPane(textArea);
                             progressDialog.add(scrollPane, BorderLayout.CENTER);
+
                             progressDialog.setSize(400, 300);
                             progressDialog.setLocationRelativeTo(PlaceOrders.this);
-                            progressDialog.setVisible(true);
 
-                            // Crear una instancia de ManufacturingProcess con callback
-                            ManufacturingProcess manufacturingProcess = new ManufacturingProcess(
-                                    () -> updateStatus("Corte en marcha..."),
-                                    () -> updateStatus("Pintura en marcha..."),
-                                    () -> updateStatus("Pulido en marcha..."),
-                                    () -> updateStatus("Ensamblaje en marcha..."),
-                                    orderService,
-                                    status -> SwingUtilities.invokeLater(() -> textArea.append(status + "\n"))
-                            );
+                            // Mostrar el cuadro de diálogo de progreso
+                            SwingUtilities.invokeLater(() -> {
+                                progressDialog.setVisible(true);
+                            });
 
-                            // Ejecutar el proceso en un hilo separado
+                            // Ejecutar el proceso de fabricación en un hilo separado
                             new Thread(() -> {
-                                manufacturingProcess.executeProcess(orderId);
-                                manufacturingProcess.shutdown();
-                                SwingUtilities.invokeLater(() -> progressDialog.dispose()); // Cerrar el diálogo cuando termine
+                                try {
+                                    // Ejecutar el proceso de fabricación usando el Container
+                                    container.executeManufacturingProcess(orderId,
+                                            status -> SwingUtilities.invokeLater(() -> textArea.append(status + "\n")),
+                                            progressBar);
+
+                                    // Cerrar el diálogo de progreso cuando termine
+                                    SwingUtilities.invokeLater(() -> progressDialog.dispose());
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                    SwingUtilities.invokeLater(() -> {
+                                        textArea.append("Error en el proceso de fabricación: " + ex.getMessage() + "\n");
+                                        progressDialog.dispose();
+                                    });
+                                }
                             }).start();
                         } else {
                             JOptionPane.showMessageDialog(PlaceOrders.this, "Orden no encontrada.");

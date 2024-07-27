@@ -1,5 +1,5 @@
 package uce.edu.ec.interfaces;
 @FunctionalInterface
 public interface IBuildable {
-    void build();
+    void build(Runnable updateProgress);
 }
