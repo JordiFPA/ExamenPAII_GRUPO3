@@ -71,7 +71,7 @@ public class CrearCuenta extends JFrame {
 
         jLabel1.setFont(new Font("Segoe UI", Font.BOLD, 36));
         jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-        jLabel1.setText("CREAR CUENTA MUCHACHOS");
+        jLabel1.setText("CREAR CUENTA");
 
         jLabel2.setFont(new Font("Segoe UI", Font.BOLD, 18));
         jLabel2.setText("Nombre:");

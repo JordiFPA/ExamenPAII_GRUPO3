@@ -63,7 +63,7 @@ public class Productos extends JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Productos a llevar");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-
+        System.out.println("");
 
         mainPanel = new JPanel();
         mainPanel.setBackground(new Color(255, 255, 153));
