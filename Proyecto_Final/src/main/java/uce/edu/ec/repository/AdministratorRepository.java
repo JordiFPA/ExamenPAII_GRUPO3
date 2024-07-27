@@ -6,4 +6,5 @@ import uce.edu.ec.model.Administrator;
 
 @Repository
 public interface AdministratorRepository extends JpaRepository<Administrator, Long> {
+    Administrator findByNameAndPassword(String name, String password);
 }

@@ -3,6 +3,9 @@ package uce.edu.ec.view;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.context.ApplicationContext;
+import uce.edu.ec.service.AdministratorService;
+import uce.edu.ec.model.Administrator;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -14,6 +17,9 @@ public class LoginAdmin extends JFrame {
 
     @Autowired
     private ApplicationContext context;
+
+    @Autowired
+    private AdministratorService administratorService;
 
     private JButton jButton2;
     private JLabel jLabel1;
@@ -51,7 +57,7 @@ public class LoginAdmin extends JFrame {
         jLabel2.setText("CONTRASEÑA:");
 
         // Crear bordes de colores
-        Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246,195,67), 2);
+        Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);
 
         jButton2.setFont(new Font("Segoe UI", Font.BOLD, 14)); // NOI18N
         jButton2.setText("Ingresar");
@@ -61,11 +67,32 @@ public class LoginAdmin extends JFrame {
         jButton2.setBorder(buttonBorder1);
         jButton2.setForeground(Color.BLACK);
         jButton2.addActionListener(evt -> {
-            FrameAdmin frameAdmin = context.getBean(FrameAdmin.class);
-            frameAdmin.setSize(getSize());
-            frameAdmin.setLocationRelativeTo(null);
-            frameAdmin.setVisible(true);
-            dispose();
+            String name = jTextField1.getText();
+            String password = new String(jPasswordField1.getPassword());
+
+            // Verificar si los campos están llenos
+            if (name.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los datos.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            try {
+                Administrator admin = administratorService.getAdministratorByNameAndPassword(name, password);
+                if (admin != null) {
+                    FrameAdmin frameAdmin = context.getBean(FrameAdmin.class);
+                    frameAdmin.setSize(getSize());
+                    frameAdmin.setLocationRelativeTo(null);
+                    frameAdmin.setVisible(true);
+                    // Limpiar los campos de entrada
+                    jTextField1.setText("");
+                    jPasswordField1.setText("");
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Credenciales incorrectas.", "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         jLabel4.setFont(new Font("Segoe UI", Font.BOLD, 18)); // NOI18N
@@ -146,3 +173,4 @@ public class LoginAdmin extends JFrame {
         setLocationRelativeTo(null); // Centra la ventana
     }
 }
+
