@@ -13,7 +13,7 @@ public class AdministratorService {
     @Autowired
     private AdministratorRepository administratorRepository;
 
-    private final String DEFAULT_NAME = "admins";
+    private final String DEFAULT_NAME = "admin";
     private final String DEFAULT_PASSWORD = "admin";
 
     public Administrator getAdministratorByNameAndPassword(String name, String password) throws Exception {
