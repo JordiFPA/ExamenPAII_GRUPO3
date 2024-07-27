@@ -34,8 +34,6 @@ public class PlaceOrders extends JFrame {
     private JLabel jLabel4;
     private JLabel jLabel5;
 
-    private Customer currentCustomer; // Campo para almacenar el cliente actual
-
     @Autowired
     public PlaceOrders(OrderService orderService, ApplicationContext context) {
         this.orderService = orderService;
@@ -58,7 +56,7 @@ public class PlaceOrders extends JFrame {
 
         tableModel = new DefaultTableModel(
                 new Object[][]{},
-                new String[]{"ID_Orden", "ID_Cliente", "Productos"}
+                new String[]{"ID_Orden", "ID_Cliente", "Productos", "Estado"}
         );
         tableOrders = new JTable(tableModel);
         JScrollPane tableScrollPane = new JScrollPane(tableOrders);
@@ -166,5 +164,25 @@ public class PlaceOrders extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
+
+        loadOrders(); // Cargar todos los pedidos al iniciar
+    }
+
+    private void loadOrders() {
+        List<Orden> orders = orderService.getAllOrders();
+        tableModel.setRowCount(0); // Limpiar tabla
+
+        for (Orden order : orders) {
+            String productNames = order.getProducts().stream()
+                    .map(Product::getName)
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse("Ninguno");
+            tableModel.addRow(new Object[]{
+                    order.getId(),
+                    order.getCustomer().getId(), // Asumiendo que `Orden` tiene un método `getCustomer` para obtener el cliente
+                    productNames,
+                    order.getStatus()
+            });
+        }
     }
 }
