@@ -109,12 +109,7 @@ public class LoginCustomer extends JFrame {
                     frameCustomer.setSize(getSize());
                     frameCustomer.setLocationRelativeTo(null);
                     frameCustomer.setVisible(true);
-
-                    java.awt.EventQueue.invokeLater(() -> {
-                        FrameAdmin frame = context.getBean(FrameAdmin.class);
-                        frame.setVisible(true);
-                    });
-
+                    // Limpiar los campos de entrada
                     jTextField1.setText("");
                     jPasswordField1.setText("");
                     dispose();

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import uce.edu.ec.model.Customer;
-import uce.edu.ec.model.ManufacturingProcess;
 import uce.edu.ec.model.Orden;
 import uce.edu.ec.model.Product;
 import uce.edu.ec.service.OrderService;
@@ -29,9 +28,11 @@ public class PlaceOrders extends JFrame {
     private JPanel mainPanel;
     private JPanel tablePanel;
     private JPanel buttonPanel;
-    private JLabel jLabel1,jLabel2,jLabel3,jLabel4,jLabel5;
-
-    private Customer currentCustomer;
+    private JLabel jLabel1;
+    private JLabel jLabel2;
+    private JLabel jLabel3;
+    private JLabel jLabel4;
+    private JLabel jLabel5;
 
     @Autowired
     public PlaceOrders(OrderService orderService, ApplicationContext context) {
@@ -55,7 +56,7 @@ public class PlaceOrders extends JFrame {
 
         tableModel = new DefaultTableModel(
                 new Object[][]{},
-                new String[]{"ID_Orden", "ID_Cliente", "Productos"}
+                new String[]{"ID_Orden", "ID_Cliente", "Productos", "Estado"}
         );
         tableOrders = new JTable(tableModel);
         JScrollPane tableScrollPane = new JScrollPane(tableOrders);
@@ -96,53 +97,6 @@ public class PlaceOrders extends JFrame {
         btnFabricarPedido.setOpaque(true);
         btnFabricarPedido.setBorder(buttonBorder1);
         btnFabricarPedido.setForeground(Color.BLACK);
-        btnFabricarPedido.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Pedir el ID de la orden
-                String input = JOptionPane.showInputDialog(PlaceOrders.this, "Ingrese el ID de la orden a fabricar:");
-                if (input != null && !input.trim().isEmpty()) {
-                    try {
-                        long orderId = Long.parseLong(input.trim());
-                        // Obtener la orden
-                        Orden order = orderService.getOrderById(orderId);
-                        if (order != null) {
-                            // Crear un cuadro de diálogo para mostrar el progreso
-                            JDialog progressDialog = new JDialog(PlaceOrders.this, "Fabricando...", true);
-                            progressDialog.setLayout(new BorderLayout());
-                            JTextArea textArea = new JTextArea();
-                            textArea.setEditable(false);
-                            JScrollPane scrollPane = new JScrollPane(textArea);
-                            progressDialog.add(scrollPane, BorderLayout.CENTER);
-                            progressDialog.setSize(400, 300);
-                            progressDialog.setLocationRelativeTo(PlaceOrders.this);
-                            progressDialog.setVisible(true);
-
-                            // Crear una instancia de ManufacturingProcess con callback
-                            ManufacturingProcess manufacturingProcess = new ManufacturingProcess(
-                                    () -> {}, // Implementar procesos específicos aquí si es necesario
-                                    () -> {},
-                                    () -> {},
-                                    () -> {},
-                                    orderService,
-                                    status -> SwingUtilities.invokeLater(() -> textArea.append(status + "\n"))
-                            );
-
-                            // Ejecutar el proceso en un hilo separado
-                            new Thread(() -> {
-                                manufacturingProcess.executeProcess(orderId);
-                                manufacturingProcess.shutdown();
-                                SwingUtilities.invokeLater(() -> progressDialog.dispose()); // Cerrar el diálogo cuando termine
-                            }).start();
-                        } else {
-                            JOptionPane.showMessageDialog(PlaceOrders.this, "Orden no encontrada.");
-                        }
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(PlaceOrders.this, "ID de orden inválido. Por favor ingrese un número válido.");
-                    }
-                }
-            }
-        });
 
         btnEliminarPedido.setBackground(Color.WHITE);
         btnEliminarPedido.setOpaque(true);
@@ -210,5 +164,25 @@ public class PlaceOrders extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
+
+        loadOrders(); // Cargar todos los pedidos al iniciar
+    }
+
+    private void loadOrders() {
+        List<Orden> orders = orderService.getAllOrders();
+        tableModel.setRowCount(0); // Limpiar tabla
+
+        for (Orden order : orders) {
+            String productNames = order.getProducts().stream()
+                    .map(Product::getName)
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse("Ninguno");
+            tableModel.addRow(new Object[]{
+                    order.getId(),
+                    order.getCustomer().getId(), // Asumiendo que `Orden` tiene un método `getCustomer` para obtener el cliente
+                    productNames,
+                    order.getStatus()
+            });
+        }
     }
 }

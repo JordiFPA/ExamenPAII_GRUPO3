@@ -8,7 +8,6 @@ import uce.edu.ec.model.Orden;
 import uce.edu.ec.model.Product;
 import uce.edu.ec.repository.OrderRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,13 +76,5 @@ public class OrderService {
         }
 
         return null;
-    }
-
-    public List<Product> getProductsByOrderId(long orderId) {
-        Orden order = getOrderById(orderId);
-        if (order != null) {
-            return order.getProducts();
-        }
-        return new ArrayList<>();
     }
 }

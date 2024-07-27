@@ -3,7 +3,6 @@ package uce.edu.ec;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import uce.edu.ec.view.FrameCustomer;
 import uce.edu.ec.view.Principal;
 
 @SpringBootApplication
@@ -16,8 +15,5 @@ public class ProyectoFinalApplication {
             Principal frame = context.getBean(Principal.class);
             frame.setVisible(true);
         });
-
-
-
     }
 }
