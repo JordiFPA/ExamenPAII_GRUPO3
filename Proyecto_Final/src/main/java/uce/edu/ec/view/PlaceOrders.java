@@ -34,6 +34,7 @@ public class PlaceOrders extends JFrame {
     private JLabel jLabel3;
     private JLabel jLabel4;
     private JLabel jLabel5;
+    private JTextArea textArea;
 
     @Autowired
     public PlaceOrders(OrderService orderService, ApplicationContext context) {
@@ -43,6 +44,8 @@ public class PlaceOrders extends JFrame {
     }
 
     private void initComponents() {
+        textArea = new JTextArea();
+        textArea.setEditable(false);
         // Inicialización de botones
         btnFabricarPedido = new JButton("Mandar a Fabricar");
         btnEliminarPedido = new JButton("Eliminar Pedido");
@@ -122,10 +125,10 @@ public class PlaceOrders extends JFrame {
 
                             // Crear una instancia de ManufacturingProcess con callback
                             ManufacturingProcess manufacturingProcess = new ManufacturingProcess(
-                                    () -> {}, // Implementar procesos específicos aquí si es necesario
-                                    () -> {},
-                                    () -> {},
-                                    () -> {},
+                                    () -> updateStatus("Corte en marcha..."),
+                                    () -> updateStatus("Pintura en marcha..."),
+                                    () -> updateStatus("Pulido en marcha..."),
+                                    () -> updateStatus("Ensamblaje en marcha..."),
                                     orderService,
                                     status -> SwingUtilities.invokeLater(() -> textArea.append(status + "\n"))
                             );
@@ -232,5 +235,10 @@ public class PlaceOrders extends JFrame {
                     order.getStatus()
             });
         }
+
+
+    }
+    private void updateStatus(String status) {
+        SwingUtilities.invokeLater(() -> textArea.append(status + "\n"));
     }
 }
