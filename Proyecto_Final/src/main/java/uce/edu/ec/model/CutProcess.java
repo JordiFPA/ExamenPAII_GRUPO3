@@ -11,7 +11,7 @@ public class CutProcess implements ICut {
         System.out.println("Iniciando corte...");
         try {
             // Simula el tiempo de corte
-            Thread.sleep(2000); // 2 segundos para el corte
+            Thread.sleep(20000); // 2 segundos para el corte
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

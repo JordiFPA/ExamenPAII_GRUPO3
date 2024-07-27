@@ -9,7 +9,7 @@ public class PolishProcess implements IPolishable {
     public void polish(Runnable updateProgress) {
         System.out.println("Iniciando Pulida...");
         try {
-            Thread.sleep(10000); // 10 segundos para el corte
+            Thread.sleep(20000);// 10 segundos para el corte
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -23,6 +23,8 @@ public class PlaceOrders extends JFrame {
 
     private final OrderService orderService;
     private final ApplicationContext context;
+    @Autowired
+    private Container container;
 
     private JButton btnFabricarPedido, btnEliminarPedido, btnSalir;
     private JTable tableOrders;
@@ -30,11 +32,11 @@ public class PlaceOrders extends JFrame {
     private JPanel mainPanel;
     private JPanel tablePanel;
     private JPanel buttonPanel;
-    private JLabel jLabel1,jLabel2,jLabel3,jLabel4,jLabel5;
+    private JPanel progressPanel; // Nuevo panel para el progreso
+    private JLabel jLabel1, jLabel2, jLabel3, jLabel4, jLabel5;
     private JTextArea textArea;
+    private JProgressBar progressBar; // Barra de progreso
 
-    @Autowired
-    Container container;
     @Autowired
     public PlaceOrders(OrderService orderService, ApplicationContext context) {
         this.orderService = orderService;
@@ -54,6 +56,20 @@ public class PlaceOrders extends JFrame {
         jLabel4 = new JLabel();
         jLabel5 = new JLabel();
 
+        // Configurar la barra de progreso y el panel de progreso
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setValue(0);
+        progressBar.setStringPainted(true);
+
+        JPanel progressPanel = new JPanel();
+        progressPanel.setLayout(new BorderLayout());
+        progressPanel.add(progressBar, BorderLayout.NORTH);
+
+        textArea = new JTextArea();
+        textArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        progressPanel.add(scrollPane, BorderLayout.CENTER);
+
         tableModel = new DefaultTableModel(
                 new Object[][]{},
                 new String[]{"ID_Orden", "ID_Cliente", "Productos", "Estado"}
@@ -66,7 +82,6 @@ public class PlaceOrders extends JFrame {
         jLabel2.setBorder(BorderFactory.createEtchedBorder());
 
         jLabel3.setText(" ");
-
         jLabel4.setText(" ");
         jLabel5.setText(" ");
 
@@ -89,64 +104,46 @@ public class PlaceOrders extends JFrame {
         btnFabricarPedido.setOpaque(true);
         btnFabricarPedido.setBorder(buttonBorder1);
         btnFabricarPedido.setForeground(Color.BLACK);
-        btnFabricarPedido.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Pedir el ID de la orden
-                String input = JOptionPane.showInputDialog(PlaceOrders.this, "Ingrese el ID de la orden a fabricar:");
-                if (input != null && !input.trim().isEmpty()) {
-                    try {
-                        long orderId = Long.parseLong(input.trim());
-                        // Obtener la orden
-                        Orden order = orderService.getOrderById(orderId);
-                        if (order != null) {
-                            // Crear un cuadro de diálogo para mostrar el progreso
-                            JDialog progressDialog = new JDialog(PlaceOrders.this, "Fabricando...", true);
-                            progressDialog.setLayout(new BorderLayout());
+        btnFabricarPedido.addActionListener(e -> {
+            // Pedir el ID de la orden
+            String input = JOptionPane.showInputDialog(PlaceOrders.this, "Ingrese el ID de la orden a fabricar:");
+            if (input != null && !input.trim().isEmpty()) {
+                try {
+                    long orderId = Long.parseLong(input.trim());
+                    // Obtener la orden
+                    Orden order = orderService.getOrderById(orderId);
+                    if (order != null) {
+                        // Mostrar el panel de progreso en lugar de un JDialog
+                        progressPanel.setVisible(true);
+                        progressBar.setValue(0);
+                        textArea.setText(""); // Limpiar el área de texto
 
-                            // Crear y configurar la barra de progreso
-                            JProgressBar progressBar = new JProgressBar(0, 100);
-                            progressBar.setValue(0);
-                            progressBar.setStringPainted(true);
-                            progressDialog.add(progressBar, BorderLayout.NORTH);
+                        // Ejecutar el proceso de fabricación en un hilo separado
+                        new Thread(() -> {
+                            try {
+                                container.executeManufacturingProcess(orderId,
+                                        status -> SwingUtilities.invokeLater(() -> {
+                                            textArea.append(status + "\n");
+                                            // Actualizar la barra de progreso aquí si es necesario
+                                            int progressValue = progressBar.getValue() + 10; // Ejemplo de incremento
+                                            progressBar.setValue(Math.min(progressValue, 100));
+                                        }),
+                                        progressBar);
 
-                            // Configurar el JTextArea
-                            textArea.setEditable(false);
-                            JScrollPane scrollPane = new JScrollPane(textArea);
-                            progressDialog.add(scrollPane, BorderLayout.CENTER);
-
-                            progressDialog.setSize(400, 300);
-                            progressDialog.setLocationRelativeTo(PlaceOrders.this);
-
-                            // Mostrar el cuadro de diálogo de progreso
-                            SwingUtilities.invokeLater(() -> {
-                                progressDialog.setVisible(true);
-                            });
-
-                            // Ejecutar el proceso de fabricación en un hilo separado
-                            new Thread(() -> {
-                                try {
-                                    // Ejecutar el proceso de fabricación usando el Container
-                                    container.executeManufacturingProcess(orderId,
-                                            status -> SwingUtilities.invokeLater(() -> textArea.append(status + "\n")),
-                                            progressBar);
-
-                                    // Cerrar el diálogo de progreso cuando termine
-                                    SwingUtilities.invokeLater(() -> progressDialog.dispose());
-                                } catch (Exception ex) {
-                                    ex.printStackTrace();
-                                    SwingUtilities.invokeLater(() -> {
-                                        textArea.append("Error en el proceso de fabricación: " + ex.getMessage() + "\n");
-                                        progressDialog.dispose();
-                                    });
-                                }
-                            }).start();
-                        } else {
-                            JOptionPane.showMessageDialog(PlaceOrders.this, "Orden no encontrada.");
-                        }
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(PlaceOrders.this, "ID de orden inválido. Por favor ingrese un número válido.");
+                                // Ocultar el panel de progreso cuando termine
+                                SwingUtilities.invokeLater(() -> progressPanel.setVisible(true));
+                            } catch (Exception ex) {
+                                SwingUtilities.invokeLater(() -> {
+                                    textArea.append("Error en el proceso de fabricación: " + ex.getMessage() + "\n");
+                                    progressPanel.setVisible(false);
+                                });
+                            }
+                        }).start();
+                    } else {
+                        JOptionPane.showMessageDialog(PlaceOrders.this, "Orden no encontrada.");
                     }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(PlaceOrders.this, "ID de orden inválido. Por favor ingrese un número válido.");
                 }
             }
         });
@@ -160,15 +157,12 @@ public class PlaceOrders extends JFrame {
         btnSalir.setOpaque(true);
         btnSalir.setBorder(buttonBorder1);
         btnSalir.setForeground(Color.BLACK);
-        btnSalir.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LoginAdmin loginAdmin = context.getBean(LoginAdmin.class);
-                loginAdmin.setSize(getSize());
-                loginAdmin.setLocationRelativeTo(null);
-                loginAdmin.setVisible(true);
-                dispose();
-            }
+        btnSalir.addActionListener(e -> {
+            LoginAdmin loginAdmin = context.getBean(LoginAdmin.class);
+            loginAdmin.setSize(getSize());
+            loginAdmin.setLocationRelativeTo(null);
+            loginAdmin.setVisible(true);
+            dispose();
         });
 
         mainPanel = new JPanel();
@@ -211,6 +205,7 @@ public class PlaceOrders extends JFrame {
         mainPanel.add(labelPanel, BorderLayout.NORTH);
         mainPanel.add(tablePanel, BorderLayout.CENTER);
         mainPanel.add(buttonPanel, BorderLayout.EAST);
+        mainPanel.add(progressPanel, BorderLayout.SOUTH); // Agregar el panel de progreso al sur
 
         getContentPane().add(mainPanel);
 
@@ -237,10 +232,5 @@ public class PlaceOrders extends JFrame {
                     order.getStatus()
             });
         }
-
-
-    }
-    private void updateStatus(String status) {
-        SwingUtilities.invokeLater(() -> textArea.append(status + "\n"));
     }
 }
