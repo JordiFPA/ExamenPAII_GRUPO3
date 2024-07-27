@@ -196,29 +196,31 @@ public class FrameCustomer extends JFrame {
         }
     }
 
-    private void refreshOrders() {
-        if (currentCustomer == null) {
-            JOptionPane.showMessageDialog(this, "No hay cliente autenticado.");
-            return;
-        }
+    public void updateOrderTable() {
+        if (currentCustomer != null) {
+            // Obtener los pedidos del cliente actual
+            List<Orden> orders = orderService.getOrdersByCustomer(currentCustomer);
 
-        // Obtener las órdenes del cliente actual
-        List<Orden> orders = orderService.getOrdersByCustomer(currentCustomer.getId());
+            // Limpiar la tabla
+            tableModel.setRowCount(0);
 
-        // Limpiar la tabla para actualizar los datos
-        tableModel.setRowCount(0);
-
-        // Añadir las órdenes actualizadas a la tabla
-        for (Orden order : orders) {
-            String productNames = order.getProducts().stream()
-                    .map(Product::getName)
-                    .reduce((a, b) -> a + ", " + b)
-                    .orElse("Ninguno");
+            for (Orden order : orders) {
+                String productNames = order.getProducts().stream()
+                        .map(Product::getName)
+                        .reduce((a, b) -> a + ", " + b)
+                        .orElse("Ninguno");
+                tableModel.addRow(new Object[]{
+                        order.getId(),
+                        currentCustomer.getName(), // Nombre del cliente actual
+                        productNames,
+                        order.getStatus()
+                });
+            }
+        } else {
+            // Manejo del caso donde el cliente actual es null
+            tableModel.setRowCount(0);
             tableModel.addRow(new Object[]{
-                    order.getId(),
-                    currentCustomer.getName(),
-                    productNames,
-                    order.getStatus()
+                    "Error", "No hay cliente actual", "", ""
             });
         }
     }
