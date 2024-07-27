@@ -16,4 +16,5 @@ public class ProyectoFinalApplication {
             frame.setVisible(true);
         });
     }
+
 }

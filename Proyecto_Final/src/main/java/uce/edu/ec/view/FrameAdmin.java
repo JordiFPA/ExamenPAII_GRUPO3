@@ -60,13 +60,8 @@ public class FrameAdmin extends javax.swing.JFrame {
         jButton2.setBorder(buttonBorder1);
         jButton2.setForeground(Color.BLACK);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PlaceOrders placeOrders = context.getBean(PlaceOrders.class);
-                placeOrders.setSize(getSize());
-                placeOrders.setLocationRelativeTo(null);
-                placeOrders.setVisible(true);
-                dispose();
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
             }
         });
 

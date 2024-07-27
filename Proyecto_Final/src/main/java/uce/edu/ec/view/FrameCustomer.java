@@ -166,11 +166,10 @@ public class FrameCustomer extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    // Método para actualizar la información del cliente
     public void updateCustomerInfo(Customer customer) {
         this.currentCustomer = customer; // Establecer el cliente actual
         jLabel2.setText("Hola " + customer.getName());
-        loadOrders(); // Cargar las órdenes del cliente
+        loadOrders(); //
     }
 
     private void loadOrders() {

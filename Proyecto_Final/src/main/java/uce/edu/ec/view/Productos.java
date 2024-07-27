@@ -315,9 +315,7 @@ public class Productos extends JFrame {
             for (int i = 0; i < rowCount; i++) {
                 String nombre = (String) tableModel.getValueAt(i, 0);
                 String material = (String) tableModel.getValueAt(i, 1);
-                double precio = 0.0; // Ajusta el precio según corresponda
-                int cantidad = Integer.parseInt((String) tableModel.getValueAt(i, 2));
-                Product product = new Product(precio, nombre, material, cantidad); // Ajusta los parámetros al constructor correcto
+                Product product = new Product(nombre, material); // Ajusta los parámetros al constructor correcto
 
                 // Si el producto ya existe en la base de datos, obtén su ID
                 Product existingProduct = productService.getProductByNameAndMaterial(nombre, material); // Debes crear este método en ProductService y ProductRepository
