@@ -31,10 +31,12 @@ public class OrderService {
     public List<Orden> getAllOrders() {
         return orderRepository.findAll();
     }
+
     @Transactional(readOnly = true)
     public List<Orden> getOrdersByCustomer(Customer customer) {
         return orderRepository.findByCustomer(customer);
     }
+
     public Orden getOrderById(long id) {
         return orderRepository.findById(id).orElse(null);
     }
@@ -77,4 +79,9 @@ public class OrderService {
 
         return null;
     }
+
+    public void deleteOrder(long orderId) {
+        orderRepository.deleteById(orderId);
+    }
+
 }

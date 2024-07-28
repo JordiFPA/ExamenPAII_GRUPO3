@@ -33,7 +33,6 @@ public class Principal extends JFrame {
         Color primaryColor = new Color(246, 195, 67); // Miel
         Color secondaryColor = new Color(255, 255, 153); // Fondo
 
-        //jPanel1.setBackground(new Color(255, 255, 255)); // Blanco
         jPanel1.setForeground(primaryColor);
 
         jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
@@ -60,11 +59,11 @@ public class Principal extends JFrame {
         jButton1.setFocusPainted(false);
         jButton1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                LoginCustomer  loginCustomer = context.getBean(LoginCustomer.class);
+                LoginCustomer loginCustomer = context.getBean(LoginCustomer.class);
                 loginCustomer.setSize(getSize());
                 loginCustomer.setLocationRelativeTo(null);
                 loginCustomer.setVisible(true);
-                dispose();
+                // No llamar a dispose() para mantener la ventana principal abierta
             }
         });
 
@@ -81,7 +80,7 @@ public class Principal extends JFrame {
                 loginAdmin.setSize(getSize());
                 loginAdmin.setLocationRelativeTo(null);
                 loginAdmin.setVisible(true);
-                dispose();
+                // No llamar a dispose() para mantener la ventana principal abierta
             }
         });
 

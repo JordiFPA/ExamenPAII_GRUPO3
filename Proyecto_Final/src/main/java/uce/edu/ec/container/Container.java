@@ -2,6 +2,8 @@ package uce.edu.ec.container;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uce.edu.ec.interfaces.Observable;
+import uce.edu.ec.interfaces.Observer;
 import uce.edu.ec.model.Customer;
 import uce.edu.ec.model.ManufacturingProcess;
 import uce.edu.ec.model.Orden;
@@ -9,6 +11,7 @@ import uce.edu.ec.model.Product;
 import uce.edu.ec.service.CustomerService;
 import uce.edu.ec.service.OrderService;
 import uce.edu.ec.service.ProductService;
+
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Component
-public class Container {
+public class Container implements Observable {
 
     @Autowired
     private CustomerService customerService;
@@ -30,11 +33,13 @@ public class Container {
     private Customer customer;
     private Orden currentOrder;
     private List<Product> products;
+    private List<Observer> observers;
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     public Container() {
         products = new ArrayList<>();
+        observers = new ArrayList<>();
     }
 
     public void registerCustomer(String name, String email, String password) throws Exception {
@@ -48,6 +53,7 @@ public class Container {
     public void createOrder(long customerId, List<Product> productList, String status) {
         currentOrder = orderService.createOrder(customerId, productList, status);
         products.clear();
+        notificar();
     }
 
     public void addProductToOrder(long productId) {
@@ -56,6 +62,7 @@ public class Container {
             if (product != null) {
                 products.add(product);
                 orderService.addProductToOrder(currentOrder.getId(), productId);
+                notificar();
             }
         }
     }
@@ -101,6 +108,7 @@ public class Container {
         // Actualizar el estado a "Fabricando"
         order.setStatus("Fabricando");
         orderService.saveOrder(order);
+        notificar();
 
         // Configurar el progreso inicial
         progressBar.setValue(0);
@@ -132,10 +140,12 @@ public class Container {
                 order.setStatus("Listo");
                 orderService.saveOrder(order);
                 statusUpdater.accept("Producto fabricado: " + order.getId());
+                notificar();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 SwingUtilities.invokeLater(() -> {
                     statusUpdater.accept("Error en el proceso de fabricación: " + ex.getMessage());
+                    notificar();
                 });
             }
         });
@@ -151,5 +161,22 @@ public class Container {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void notificar() {
+        for (Observer observer : observers) {
+            observer.update("El estado del pedido ha cambiado. Estado actual: " + (currentOrder != null ? currentOrder.getStatus() : "N/A"));
+        }
+    }
+
+    @Override
+    public void agregarObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removerObserver(Observer observer) {
+        observers.remove(observer);
     }
 }

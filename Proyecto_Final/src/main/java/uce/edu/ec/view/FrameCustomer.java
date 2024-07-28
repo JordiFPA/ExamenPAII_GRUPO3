@@ -22,7 +22,7 @@ public class FrameCustomer extends JFrame {
     private final OrderService orderService;
     private final ApplicationContext context;
 
-    private JButton btnRealizarPedido, btnSalir;
+    private JButton btnRealizarPedido, btnSalir, btnNotificarPedido;
     private JTable tableOrders;
     private DefaultTableModel tableModel;
     private JPanel mainPanel;
@@ -47,6 +47,7 @@ public class FrameCustomer extends JFrame {
         // Inicialización de botones
         btnRealizarPedido = new JButton("Realizar Pedido");
         btnSalir = new JButton("Salir");
+        btnNotificarPedido = new JButton("Notificar Pedido");
 
         // Inicialización de etiquetas
         jLabel1 = new JLabel();
@@ -88,6 +89,10 @@ public class FrameCustomer extends JFrame {
         btnSalir.setMaximumSize(buttonSize);
         btnSalir.setPreferredSize(buttonSize);
 
+        btnNotificarPedido.setMinimumSize(buttonSize);
+        btnNotificarPedido.setMaximumSize(buttonSize);
+        btnNotificarPedido.setPreferredSize(buttonSize);
+
         Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);
 
         btnRealizarPedido.setBackground(Color.WHITE);
@@ -120,6 +125,17 @@ public class FrameCustomer extends JFrame {
             }
         });
 
+        btnNotificarPedido.setBackground(Color.WHITE);
+        btnNotificarPedido.setOpaque(true);
+        btnNotificarPedido.setBorder(buttonBorder1);
+        btnNotificarPedido.setForeground(Color.BLACK);
+        btnNotificarPedido.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                notifyOrderStatus();
+            }
+        });
+
         mainPanel = new JPanel();
         mainPanel.setBackground(new Color(255, 255, 153));
         mainPanel.setLayout(new BorderLayout());
@@ -138,6 +154,8 @@ public class FrameCustomer extends JFrame {
         buttonPanel.add(btnRealizarPedido);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(btnSalir);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        buttonPanel.add(btnNotificarPedido);
         buttonPanel.add(Box.createVerticalGlue()); // Añadir espacio abajo
 
         // Agregar jLabels a un panel adicional
@@ -196,6 +214,10 @@ public class FrameCustomer extends JFrame {
         }
     }
 
+    public Customer getCurrentCustomer() {
+        return currentCustomer;
+    }
+
     public void updateOrderTable() {
         if (currentCustomer != null) {
             // Obtener los pedidos del cliente actual
@@ -222,6 +244,21 @@ public class FrameCustomer extends JFrame {
             tableModel.addRow(new Object[]{
                     "Error", "No hay cliente actual", "", ""
             });
+        }
+    }
+
+    private void notifyOrderStatus() {
+        if (currentCustomer != null) {
+            List<Orden> orders = orderService.getOrdersByCustomer(currentCustomer.getId());
+            StringBuilder messageBuilder = new StringBuilder();
+            for (Orden order : orders) {
+                messageBuilder.append("Pedido ID: ").append(order.getId())
+                        .append(" En este momento esta: ").append(order.getStatus())
+                        .append("\n");
+            }
+            JOptionPane.showMessageDialog(this, messageBuilder.toString(), "Estado de Pedidos", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "No hay cliente autenticado.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

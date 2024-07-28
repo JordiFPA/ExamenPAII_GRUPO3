@@ -152,6 +152,25 @@ public class PlaceOrders extends JFrame {
         btnEliminarPedido.setOpaque(true);
         btnEliminarPedido.setBorder(buttonBorder1);
         btnEliminarPedido.setForeground(Color.BLACK);
+        btnEliminarPedido.addActionListener(e -> {
+            int selectedRow = tableOrders.getSelectedRow();
+            if (selectedRow != -1) {
+                int confirm = JOptionPane.showConfirmDialog(
+                        PlaceOrders.this,
+                        "¿Está seguro de que desea eliminar el pedido seleccionado?",
+                        "Confirmar eliminación",
+                        JOptionPane.YES_NO_OPTION
+                );
+                if (confirm == JOptionPane.YES_OPTION) {
+                    long orderId = (Long) tableModel.getValueAt(selectedRow, 0);
+                    orderService.deleteOrder(orderId);
+                    loadOrders();
+                    JOptionPane.showMessageDialog(PlaceOrders.this, "Pedido eliminado exitosamente.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(PlaceOrders.this, "Por favor, seleccione un pedido para eliminar.");
+            }
+        });
 
         btnSalir.setBackground(Color.WHITE);
         btnSalir.setOpaque(true);
