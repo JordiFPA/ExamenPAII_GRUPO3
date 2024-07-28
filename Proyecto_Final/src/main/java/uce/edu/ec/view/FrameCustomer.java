@@ -3,6 +3,8 @@ package uce.edu.ec.view;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import uce.edu.ec.container.Container;
+import uce.edu.ec.interfaces.Observer;
 import uce.edu.ec.model.Customer;
 import uce.edu.ec.model.Orden;
 import uce.edu.ec.model.Product;
@@ -17,10 +19,11 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 @Component
-public class FrameCustomer extends JFrame {
+public class FrameCustomer extends JFrame implements Observer {
 
     private final OrderService orderService;
     private final ApplicationContext context;
+    private final Container container;
 
     private JButton btnRealizarPedido, btnSalir;
     private JTable tableOrders;
@@ -39,9 +42,12 @@ public class FrameCustomer extends JFrame {
     private Timer statusUpdateTimer; // Timer para actualizar los mensajes de estado
 
     @Autowired
-    public FrameCustomer(OrderService orderService, ApplicationContext context) {
+    public FrameCustomer(OrderService orderService, ApplicationContext context, Container container) {
         this.orderService = orderService;
+        this.container = container;
+        container.addObserver(this);
         this.context = context;
+
         initComponents();
         startStatusUpdateTimer(); // Iniciar el timer para actualizar los mensajes
     }
@@ -278,5 +284,11 @@ public class FrameCustomer extends JFrame {
         } else {
             statusTextArea.setText("No hay cliente autenticado.");
         }
+    }
+
+    @Override
+    public void update(String message) {
+        updateOrderStatusMessages();
+        statusTextArea.append(message + "\n");
     }
 }

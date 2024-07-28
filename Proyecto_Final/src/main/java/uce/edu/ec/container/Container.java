@@ -168,10 +168,20 @@ public class Container implements Observable {
     }
 
     @Override
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+
+    }
+
+    @Override
     public void notificar() {
         for (Observer observer : observers) {
             observer.update("El estado del pedido ha cambiado. Estado actual: " + (currentOrder != null ? currentOrder.getStatus() : "N/A"));
         }
     }
-
 }
