@@ -181,12 +181,13 @@ public class FrameCustomer extends JFrame implements Observer {
         setLocationRelativeTo(null);
     }
 
-    // Método para iniciar el Timer que actualizará los mensajes de estado
+    // Método para iniciar el Timer que actualizará los mensajes de estado y la tabla
     private void startStatusUpdateTimer() {
         statusUpdateTimer = new Timer(5000, new ActionListener() { // Actualiza cada 5 segundos
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateOrderStatusMessages();
+                updateOrderTable(); // Actualiza la tabla de pedidos
+                updateOrderStatusMessages(); // Actualiza los mensajes de estado
             }
         });
         statusUpdateTimer.start();
@@ -255,7 +256,12 @@ public class FrameCustomer extends JFrame implements Observer {
         }
     }
 
-    // Método para actualizar los mensajes de estado en el JTextArea
+    @Override
+    public void update(String message) {
+        updateOrderStatusMessages();
+        statusTextArea.append(message + "\n");
+    }
+
     private void updateOrderStatusMessages() {
         if (currentCustomer != null) {
             List<Orden> orders = orderService.getOrdersByCustomer(currentCustomer.getId());
@@ -284,11 +290,5 @@ public class FrameCustomer extends JFrame implements Observer {
         } else {
             statusTextArea.setText("No hay cliente autenticado.");
         }
-    }
-
-    @Override
-    public void update(String message) {
-        updateOrderStatusMessages();
-        statusTextArea.append(message + "\n");
     }
 }

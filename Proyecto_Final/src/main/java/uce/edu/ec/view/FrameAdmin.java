@@ -47,9 +47,13 @@ public class FrameAdmin extends javax.swing.JFrame {
         jButton1.setOpaque(true);
         jButton1.setBorder(buttonBorder1);
         jButton1.setForeground(Color.BLACK);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+        jButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                ViewSales viewSales = context.getBean(ViewSales.class);
+                viewSales.setSize(getSize());
+                viewSales.setLocationRelativeTo(null);
+                viewSales.setVisible(true);
+                dispose();
             }
         });
 

@@ -107,7 +107,7 @@ public class Container implements Observable {
 
         // Actualizar el estado a "Fabricando"
         order.setStatus("Fabricando");
-        orderService.saveOrder(order);
+        orderService.saveOrder(order);  // Asegurarse de guardar el estado actualizado en la base de datos
         notificar();
 
         // Configurar el progreso inicial
@@ -142,7 +142,7 @@ public class Container implements Observable {
 
                 // Actualizar el estado a "Listo" después de fabricar
                 order.setStatus("Listo");
-                orderService.saveOrder(order);
+                orderService.saveOrder(order);  // Asegurarse de guardar el estado actualizado en la base de datos
                 statusUpdater.accept("Producto fabricado: " + order.getId());
                 notificar(); // Notificar a los observadores
             } catch (Exception ex) {
@@ -154,6 +154,7 @@ public class Container implements Observable {
             }
         });
     }
+
 
     private void updateProgressBar(JProgressBar progressBar, int value) {
         SwingUtilities.invokeLater(() -> progressBar.setValue(value));
@@ -181,7 +182,7 @@ public class Container implements Observable {
     @Override
     public void notificar() {
         for (Observer observer : observers) {
-            observer.update("El estado del pedido ha cambiado. Estado actual: " + (currentOrder != null ? currentOrder.getStatus() : "N/A"));
+            observer.update("Estado actual: " + (currentOrder != null ? currentOrder.getStatus() : "N/A"));
         }
     }
 }
