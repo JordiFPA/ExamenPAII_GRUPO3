@@ -232,4 +232,9 @@ public class PlaceOrders extends JFrame {
             });
         }
     }
+
+    public void updateOrdersAdmi() {
+        loadOrders();
+    }
+
 }

@@ -13,22 +13,22 @@ public class Process implements IAssembly, ICut, IPaint , ISandable {
     }
 
     @Override
-    public void cut() {
-        System.out.println("Proceso de corte en marcha.");
-    }
-
-    @Override
-    public void paint() {
-
-    }
-
-    @Override
     public void assembly() {
 
     }
 
     @Override
     public void sandable() {
+
+    }
+
+    @Override
+    public void cut(Runnable updateProgress) {
+        System.out.println("Proceso de corte en marcha.");
+    }
+
+    @Override
+    public void paint(Runnable updateProgress) {
 
     }
 }
