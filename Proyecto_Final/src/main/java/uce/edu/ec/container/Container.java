@@ -120,27 +120,31 @@ public class Container implements Observable {
                 statusUpdater.accept("Corte en marcha...");
                 manufacturingProcess.cut(() -> SwingUtilities.invokeLater(() -> updateProgressBar(progressBar, 25)));
                 statusUpdater.accept("Corte completado.");
+                notificar(); // Notificar a los observadores
 
                 // Pintura
                 statusUpdater.accept("Pintura en marcha...");
                 manufacturingProcess.paint(() -> SwingUtilities.invokeLater(() -> updateProgressBar(progressBar, 50)));
                 statusUpdater.accept("Pintura completada.");
+                notificar(); // Notificar a los observadores
 
                 // Pulido
                 statusUpdater.accept("Pulido en marcha...");
                 manufacturingProcess.polish(() -> SwingUtilities.invokeLater(() -> updateProgressBar(progressBar, 75)));
                 statusUpdater.accept("Pulido completado.");
+                notificar(); // Notificar a los observadores
 
                 // Ensamblaje
                 statusUpdater.accept("Ensamblaje en marcha...");
                 manufacturingProcess.build(() -> SwingUtilities.invokeLater(() -> updateProgressBar(progressBar, 100)));
                 statusUpdater.accept("Ensamblaje completado.");
+                notificar(); // Notificar a los observadores
 
                 // Actualizar el estado a "Listo" después de fabricar
                 order.setStatus("Listo");
                 orderService.saveOrder(order);
                 statusUpdater.accept("Producto fabricado: " + order.getId());
-                notificar();
+                notificar(); // Notificar a los observadores
             } catch (Exception ex) {
                 ex.printStackTrace();
                 SwingUtilities.invokeLater(() -> {
@@ -170,13 +174,4 @@ public class Container implements Observable {
         }
     }
 
-    @Override
-    public void agregarObserver(Observer observer) {
-        observers.add(observer);
-    }
-
-    @Override
-    public void removerObserver(Observer observer) {
-        observers.remove(observer);
-    }
 }

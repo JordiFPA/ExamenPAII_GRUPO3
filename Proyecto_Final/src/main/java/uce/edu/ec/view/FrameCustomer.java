@@ -22,7 +22,7 @@ public class FrameCustomer extends JFrame {
     private final OrderService orderService;
     private final ApplicationContext context;
 
-    private JButton btnRealizarPedido, btnSalir, btnNotificarPedido;
+    private JButton btnRealizarPedido, btnSalir;
     private JTable tableOrders;
     private DefaultTableModel tableModel;
     private JPanel mainPanel;
@@ -35,19 +35,21 @@ public class FrameCustomer extends JFrame {
     private JLabel jLabel5;
 
     private Customer currentCustomer; // Campo para almacenar el cliente actual
+    private JTextArea statusTextArea; // JTextArea para mostrar los mensajes de estado
+    private Timer statusUpdateTimer; // Timer para actualizar los mensajes de estado
 
     @Autowired
     public FrameCustomer(OrderService orderService, ApplicationContext context) {
         this.orderService = orderService;
         this.context = context;
         initComponents();
+        startStatusUpdateTimer(); // Iniciar el timer para actualizar los mensajes
     }
 
     private void initComponents() {
         // Inicialización de botones
         btnRealizarPedido = new JButton("Realizar Pedido");
         btnSalir = new JButton("Salir");
-        btnNotificarPedido = new JButton("Notificar Pedido");
 
         // Inicialización de etiquetas
         jLabel1 = new JLabel();
@@ -89,10 +91,6 @@ public class FrameCustomer extends JFrame {
         btnSalir.setMaximumSize(buttonSize);
         btnSalir.setPreferredSize(buttonSize);
 
-        btnNotificarPedido.setMinimumSize(buttonSize);
-        btnNotificarPedido.setMaximumSize(buttonSize);
-        btnNotificarPedido.setPreferredSize(buttonSize);
-
         Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);
 
         btnRealizarPedido.setBackground(Color.WHITE);
@@ -125,16 +123,10 @@ public class FrameCustomer extends JFrame {
             }
         });
 
-        btnNotificarPedido.setBackground(Color.WHITE);
-        btnNotificarPedido.setOpaque(true);
-        btnNotificarPedido.setBorder(buttonBorder1);
-        btnNotificarPedido.setForeground(Color.BLACK);
-        btnNotificarPedido.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                notifyOrderStatus();
-            }
-        });
+        // Inicializar JTextArea y JScrollPane para los mensajes de estado
+        statusTextArea = new JTextArea(10, 40);
+        statusTextArea.setEditable(false);
+        JScrollPane statusScrollPane = new JScrollPane(statusTextArea);
 
         mainPanel = new JPanel();
         mainPanel.setBackground(new Color(255, 255, 153));
@@ -145,6 +137,7 @@ public class FrameCustomer extends JFrame {
         tablePanel.setBackground(new Color(255, 255, 153)); // Coincidir con el color de mainPanel
         tablePanel.setLayout(new BorderLayout());
         tablePanel.add(tableScrollPane, BorderLayout.CENTER);
+        tablePanel.add(statusScrollPane, BorderLayout.SOUTH); // Añadir JTextArea al sur del panel de la tabla
 
         // Panel para los botones
         buttonPanel = new JPanel();
@@ -154,8 +147,6 @@ public class FrameCustomer extends JFrame {
         buttonPanel.add(btnRealizarPedido);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(btnSalir);
-        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        buttonPanel.add(btnNotificarPedido);
         buttonPanel.add(Box.createVerticalGlue()); // Añadir espacio abajo
 
         // Agregar jLabels a un panel adicional
@@ -182,6 +173,17 @@ public class FrameCustomer extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
+    }
+
+    // Método para iniciar el Timer que actualizará los mensajes de estado
+    private void startStatusUpdateTimer() {
+        statusUpdateTimer = new Timer(5000, new ActionListener() { // Actualiza cada 5 segundos
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateOrderStatusMessages();
+            }
+        });
+        statusUpdateTimer.start();
     }
 
     // Método para actualizar la información del cliente
@@ -221,7 +223,7 @@ public class FrameCustomer extends JFrame {
     public void updateOrderTable() {
         if (currentCustomer != null) {
             // Obtener los pedidos del cliente actual
-            List<Orden> orders = orderService.getOrdersByCustomer(currentCustomer);
+            List<Orden> orders = orderService.getOrdersByCustomer(currentCustomer.getId());
 
             // Limpiar la tabla
             tableModel.setRowCount(0);
@@ -247,19 +249,34 @@ public class FrameCustomer extends JFrame {
         }
     }
 
-    private void notifyOrderStatus() {
+    // Método para actualizar los mensajes de estado en el JTextArea
+    private void updateOrderStatusMessages() {
         if (currentCustomer != null) {
             List<Orden> orders = orderService.getOrdersByCustomer(currentCustomer.getId());
             StringBuilder messageBuilder = new StringBuilder();
             for (Orden order : orders) {
-                messageBuilder.append("Pedido ID: ").append(order.getId())
-                        .append(" En este momento esta: ").append(order.getStatus())
-                        .append("\n");
+                switch (order.getStatus()) {
+                    case "Pendiente":
+                        messageBuilder.append("Pedido ID: ").append(order.getId())
+                                .append(" - Su pedido está a la espera de ser fabricado.\n");
+                        break;
+                    case "Fabricando":
+                        messageBuilder.append("Pedido ID: ").append(order.getId())
+                                .append(" - Su pedido ya empezó a fabricarse...\n");
+                        break;
+                    case "Listo":
+                        messageBuilder.append("Pedido ID: ").append(order.getId())
+                                .append(" - Su pedido se fabricó correctamente, muchas gracias.\n");
+                        break;
+                    default:
+                        messageBuilder.append("Pedido ID: ").append(order.getId())
+                                .append(" - Estado desconocido: ").append(order.getStatus()).append("\n");
+                        break;
+                }
             }
-            JOptionPane.showMessageDialog(this, messageBuilder.toString(), "Estado de Pedidos", JOptionPane.INFORMATION_MESSAGE);
+            statusTextArea.setText(messageBuilder.toString());
         } else {
-            JOptionPane.showMessageDialog(this, "No hay cliente autenticado.", "Error", JOptionPane.ERROR_MESSAGE);
+            statusTextArea.setText("No hay cliente autenticado.");
         }
     }
-
 }
