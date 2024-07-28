@@ -214,7 +214,7 @@ public class Productos extends JFrame {
                 frameCustomer.setVisible(true);
                 dispose();
                 PlaceOrders placeOrders = context.getBean(PlaceOrders.class);
-                placeOrders.updateOrdersAdmi();
+               // placeOrders.updateOrdersAdmi();
 
             }
         });

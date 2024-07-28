@@ -5,7 +5,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import uce.edu.ec.container.Container;
 import uce.edu.ec.model.Customer;
-import uce.edu.ec.model.ManufacturingProcess;
 import uce.edu.ec.model.Orden;
 import uce.edu.ec.model.Product;
 import uce.edu.ec.service.OrderService;
@@ -32,8 +31,9 @@ public class PlaceOrders extends JFrame {
     private JPanel mainPanel;
     private JPanel tablePanel;
     private JPanel buttonPanel;
-    private JLabel jLabel1,jLabel2,jLabel3,jLabel4,jLabel5;
+    private JLabel jLabel1, jLabel2, jLabel3, jLabel4, jLabel5;
     private JTextArea textArea;
+    private Timer timer;
 
     @Autowired
     public PlaceOrders(OrderService orderService, ApplicationContext context) {
@@ -201,40 +201,52 @@ public class PlaceOrders extends JFrame {
         labelPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre etiquetas
         labelPanel.add(jLabel5);
 
-        // Agregar los paneles a mainPanel
-        mainPanel.add(labelPanel, BorderLayout.NORTH);
-        mainPanel.add(tablePanel, BorderLayout.CENTER);
-        mainPanel.add(buttonPanel, BorderLayout.EAST);
+        mainPanel.add(labelPanel, BorderLayout.NORTH); // Agregar labelPanel al norte
+        mainPanel.add(tablePanel, BorderLayout.CENTER); // Colocar la tabla a la izquierda (centro)
+        mainPanel.add(buttonPanel, BorderLayout.EAST); // Colocar los botones a la derecha
 
-        getContentPane().add(mainPanel);
+        add(mainPanel);
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Place Orders");
         setSize(800, 600);
         setLocationRelativeTo(null);
 
-        loadOrders(); // Cargar todos los pedidos al iniciar
+        // Inicializar y configurar el Timer para actualizar los pedidos cada 5 segundos
+        timer = new Timer(5000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadOrders(); // Actualiza la tabla de pedidos
+            }
+        });
+        timer.start(); // Inicia el Timer
+
+        // Detener el Timer cuando la ventana se cierre
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                if (timer != null) {
+                    timer.stop();
+                }
+            }
+        });
+
+        loadOrders();
     }
 
     private void loadOrders() {
         List<Orden> orders = orderService.getAllOrders();
-        tableModel.setRowCount(0); // Limpiar tabla
-
+        tableModel.setRowCount(0); // Limpiar la tabla antes de agregar nuevas filas
         for (Orden order : orders) {
-            String productNames = order.getProducts().stream()
-                    .map(Product::getName)
-                    .reduce((a, b) -> a + ", " + b)
-                    .orElse("Ninguno");
-            tableModel.addRow(new Object[]{
-                    order.getId(),
-                    order.getCustomer().getId(), // Asumiendo que `Orden` tiene un método `getCustomer` para obtener el cliente
-                    productNames,
-                    order.getStatus()
-            });
+            StringBuilder productsBuilder = new StringBuilder();
+            for (Product product : order.getProducts()) {
+                productsBuilder.append(product.getName()).append(", ");
+            }
+            String products = productsBuilder.toString();
+            if (products.length() > 0) {
+                products = products.substring(0, products.length() - 2); // Eliminar la última coma y espacio
+            }
+            tableModel.addRow(new Object[]{order.getId(), order.getCustomer().getId(), products, order.getStatus()});
         }
     }
-
-    public void updateOrdersAdmi() {
-        loadOrders();
-    }
-
 }
