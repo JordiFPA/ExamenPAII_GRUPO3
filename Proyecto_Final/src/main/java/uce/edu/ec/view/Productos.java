@@ -334,7 +334,7 @@ public class Productos extends JFrame {
             jComboBox1.setSelectedIndex(0);
             jTextField1.setText("");
         } else {
-            JOptionPane.showMessageDialog(this, "Por favor seleccione un producto, material y cantidad.");
+            JOptionPane.showMessageDialog(this, "Por favor seleccione un producto y material.");
         }
     }
 

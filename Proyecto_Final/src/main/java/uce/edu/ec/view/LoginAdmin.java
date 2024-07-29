@@ -68,7 +68,7 @@ public class LoginAdmin extends JFrame {
         jButton2.setText("Ingresar");
         jButton2.setPreferredSize(new Dimension(150, 60));
         jButton2.setBackground(new Color(255, 255, 255));
-        jButton2.setOpaque(true); // Asegura que el fondo sea visible
+        jButton2.setOpaque(true);
         jButton2.setBorder(buttonBorder1);
         jButton2.setForeground(Color.BLACK);
         jButton2.addActionListener(evt -> authenticateAdmin());
