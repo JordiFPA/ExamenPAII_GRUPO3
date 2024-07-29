@@ -9,7 +9,7 @@ public class CutProcess implements ICut {
     @Override
     public void cut(Runnable updateProgress) {
         try {
-            Thread.sleep(20000); // 2 segundos para el corte
+            Thread.sleep(20000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

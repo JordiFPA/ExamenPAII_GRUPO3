@@ -145,7 +145,13 @@ public class CrearCuenta extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    crearCuenta();
+                    if (e.getSource() == jTextField1) {
+                        jTextField3.requestFocus();
+                    } else if (e.getSource() == jTextField3) {
+                        jPasswordField.requestFocus();
+                    } else if (e.getSource() == jPasswordField) {
+                        crearCuenta();
+                    }
                 }
             }
         };
@@ -222,7 +228,7 @@ public class CrearCuenta extends JFrame {
         );
 
         pack();
-        setLocationRelativeTo(null); // Centra la ventana
+        setLocationRelativeTo(null);
     }
 
     private void crearCuenta() {

@@ -57,21 +57,21 @@ public class LoginAdmin extends JFrame {
 
         jPanel1.setBackground(new Color(255, 255, 153));
 
-        jLabel1.setFont(new Font("Segoe UI", Font.BOLD, 36)); // NOI18N
+        jLabel1.setFont(new Font("Segoe UI", Font.BOLD, 36));
         jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel1.setText("BIENVENIDO");
 
-        jLabel2.setFont(new Font("Segoe UI", Font.BOLD, 18)); // NOI18N
+        jLabel2.setFont(new Font("Segoe UI", Font.BOLD, 18));
         jLabel2.setText("CONTRASEÑA:");
 
-        // Crear bordes de colores
+
         Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);
 
-        jButton2.setFont(new Font("Segoe UI", Font.BOLD, 14)); // NOI18N
+        jButton2.setFont(new Font("Segoe UI", Font.BOLD, 14));
         jButton2.setText("Ingresar");
         jButton2.setPreferredSize(new Dimension(150, 60));
         jButton2.setBackground(new Color(255, 255, 255));
-        jButton2.setOpaque(true); // Asegura que el fondo sea visible
+        jButton2.setOpaque(true);
         jButton2.setBorder(buttonBorder1);
         jButton2.setForeground(Color.BLACK);
         jButton2.addActionListener(evt -> authenticateAdmin());
@@ -85,14 +85,14 @@ public class LoginAdmin extends JFrame {
             }
         });
 
-        jLabel4.setFont(new Font("Segoe UI", Font.BOLD, 18)); // NOI18N
+        jLabel4.setFont(new Font("Segoe UI", Font.BOLD, 18));
         jLabel4.setText("USUARIO:");
 
-        jButton3.setFont(new Font("Segoe UI", Font.BOLD, 18)); // NOI18N
+        jButton3.setFont(new Font("Segoe UI", Font.BOLD, 18));
         jButton3.setText("Volver");
         jButton3.setPreferredSize(new Dimension(150, 60));
         jButton3.setBackground(new Color(255, 255, 255));
-        jButton3.setOpaque(true); // Asegura que el fondo sea visible
+        jButton3.setOpaque(true);
         jButton3.setBorder(buttonBorder1);
         jButton3.setForeground(Color.BLACK);
         jButton3.addActionListener(evt -> {
@@ -175,14 +175,14 @@ public class LoginAdmin extends JFrame {
         );
 
         pack();
-        setLocationRelativeTo(null); // Centra la ventana
+        setLocationRelativeTo(null);
     }
 
     private void authenticateAdmin() {
         String name = jTextField1.getText();
         String password = new String(jPasswordField1.getPassword());
 
-        // Verificar si los campos están llenos
+
         if (name.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los datos.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
             return;
@@ -195,7 +195,7 @@ public class LoginAdmin extends JFrame {
                 frameAdmin.setSize(getSize());
                 frameAdmin.setLocationRelativeTo(null);
                 frameAdmin.setVisible(true);
-                // Limpiar los campos de entrada
+
                 jTextField1.setText("");
                 jPasswordField1.setText("");
                 dispose();

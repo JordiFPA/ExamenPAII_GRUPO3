@@ -33,14 +33,14 @@ public class Principal extends JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        // Establecer colores
+
         Color primaryColor = new Color(246, 195, 67); // Miel
         Color secondaryColor = new Color(255, 255, 153); // Fondo
 
         jPanel1.setForeground(primaryColor);
 
         jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-        jLabel1.setIcon(new ImageIcon(getClass().getResource("/logoProgra.jpg"))); // NOI18N
+        jLabel1.setIcon(new ImageIcon(getClass().getResource("/logoProgra.jpg")));
 
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -55,9 +55,9 @@ public class Principal extends JFrame {
 
         jPanel2.setBackground(secondaryColor);
 
-        jButton1.setIcon(new ImageIcon(getClass().getResource("/cliente.png"))); // NOI18N
+        jButton1.setIcon(new ImageIcon(getClass().getResource("/cliente.png")));
         jButton1.setText("");
-        jButton1.setBorder(BorderFactory.createLineBorder(primaryColor, 4)); // Borde marrón con grosor de 3 píxeles
+        jButton1.setBorder(BorderFactory.createLineBorder(primaryColor, 4));
         jButton1.setBackground(primaryColor);
         jButton1.setForeground(secondaryColor);
         jButton1.setFocusPainted(false);
@@ -67,13 +67,13 @@ public class Principal extends JFrame {
                 loginCustomer.setSize(getSize());
                 loginCustomer.setLocationRelativeTo(null);
                 loginCustomer.setVisible(true);
-                // No llamar a dispose() para mantener la ventana principal abierta
+
             }
         });
 
-        jButton2.setIcon(new ImageIcon(getClass().getResource("/admin.jpg"))); // NOI18N
+        jButton2.setIcon(new ImageIcon(getClass().getResource("/admin.jpg")));
         jButton2.setText("");
-        jButton2.setBorder(BorderFactory.createLineBorder(primaryColor, 4)); // Borde marrón con grosor de 3 píxeles
+        jButton2.setBorder(BorderFactory.createLineBorder(primaryColor, 4));
         jButton2.setBackground(primaryColor);
         jButton2.setForeground(secondaryColor);
         jButton2.setFocusPainted(false);
@@ -84,7 +84,7 @@ public class Principal extends JFrame {
                 loginAdmin.setSize(getSize());
                 loginAdmin.setLocationRelativeTo(null);
                 loginAdmin.setVisible(true);
-                // No llamar a dispose() para mantener la ventana principal abierta
+
             }
         });
 
@@ -126,7 +126,7 @@ public class Principal extends JFrame {
         );
 
         pack();
-        setLocationRelativeTo(null); // Centra la ventana
+        setLocationRelativeTo(null);
     }
 
     private JButton jButton1;

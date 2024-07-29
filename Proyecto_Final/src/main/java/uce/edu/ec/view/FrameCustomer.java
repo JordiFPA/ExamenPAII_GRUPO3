@@ -54,13 +54,13 @@ public class FrameCustomer extends JFrame implements Observer {
     }
 
     private void initComponents() {
-        // Inicialización de botones
+
         btnRealizarPedido = new JButton("Realizar Pedido");
         btnSalir = new JButton("Salir");
         setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Logoicon.png"))).getImage());
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
-        // Inicialización de etiquetas
+
         jLabel1 = new JLabel();
         jLabel2 = new JLabel();
         jLabel3 = new JLabel();
@@ -73,8 +73,8 @@ public class FrameCustomer extends JFrame implements Observer {
         );
         tableOrders = new JTable(tableModel);
         JScrollPane tableScrollPane = new JScrollPane(tableOrders);
-        tableScrollPane.setPreferredSize(new Dimension(500, 200)); // Ajustar tamaño aquí
-        jLabel1.setIcon(new ImageIcon(getClass().getResource("/logoProgra.jpg"))); // Asegúrate de que esta ruta sea correcta
+        tableScrollPane.setPreferredSize(new Dimension(500, 200));
+        jLabel1.setIcon(new ImageIcon(getClass().getResource("/logoProgra.jpg")));
         jLabel2.setText("Hola");
         jLabel2.setBorder(BorderFactory.createEtchedBorder());
         jLabel2.setFont(new Font("Times New Roman", Font.BOLD, 18));
@@ -82,7 +82,7 @@ public class FrameCustomer extends JFrame implements Observer {
         jLabel3.setText("Aquí puedes ver tu historial de pedidos o realizar un nuevo pedido");
         jLabel3.setFont(new Font("Times New Roman", Font.BOLD, 18));
         jLabel5.setText(" ");
-        Dimension buttonSize = new Dimension(220, 60); // Ajustar tamaño aquí
+        Dimension buttonSize = new Dimension(220, 60);
         btnRealizarPedido.setMinimumSize(buttonSize);
         btnRealizarPedido.setMaximumSize(buttonSize);
         btnRealizarPedido.setPreferredSize(buttonSize);
@@ -122,7 +122,7 @@ public class FrameCustomer extends JFrame implements Observer {
             }
         });
 
-        // Inicializar JTextArea y JScrollPane para los mensajes de estado
+
         statusTextArea = new JTextArea(10, 40);
         statusTextArea.setEditable(false);
         JScrollPane statusScrollPane = new JScrollPane(statusTextArea);
@@ -140,23 +140,23 @@ public class FrameCustomer extends JFrame implements Observer {
         buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(255, 255, 153));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        buttonPanel.add(Box.createVerticalGlue()); // Añadir espacio arriba
+        buttonPanel.add(Box.createVerticalGlue());
         buttonPanel.add(btnRealizarPedido);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(btnSalir);
         buttonPanel.add(Box.createVerticalGlue());
 
         JPanel labelPanel = new JPanel();
-        labelPanel.setBackground(new Color(255, 255, 153)); // Coincidir con el color de mainPanel
+        labelPanel.setBackground(new Color(255, 255, 153));
         labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
         labelPanel.add(jLabel1);
-        labelPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre imagen y texto
+        labelPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         labelPanel.add(jLabel2);
-        labelPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre etiquetas
+        labelPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         labelPanel.add(jLabel4);
-        labelPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre etiquetas
+        labelPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         labelPanel.add(jLabel3);
-        labelPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre etiquetas
+        labelPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         labelPanel.add(jLabel5);
 
         mainPanel.add(labelPanel, BorderLayout.NORTH);
@@ -182,11 +182,11 @@ public class FrameCustomer extends JFrame implements Observer {
         statusUpdateTimer.start();
     }
 
-    // Método para actualizar la información del cliente
+
     public void updateCustomerInfo(Customer customer) {
-        this.currentCustomer = customer; // Establecer el cliente actual
+        this.currentCustomer = customer;
         jLabel2.setText("Hola " + customer.getName());
-        loadOrders(); //
+        loadOrders();
     }
 
     private void loadOrders() {
@@ -196,7 +196,7 @@ public class FrameCustomer extends JFrame implements Observer {
         }
 
         List<Orden> orders = orderService.getOrdersByCustomer(currentCustomer.getId());
-        tableModel.setRowCount(0); // Limpiar tabla
+        tableModel.setRowCount(0);
 
         for (Orden order : orders) {
             String productNames = order.getProducts().stream()
@@ -218,10 +218,10 @@ public class FrameCustomer extends JFrame implements Observer {
 
     public void updateOrderTable() {
         if (currentCustomer != null) {
-            // Obtener los pedidos del cliente actual
+
             List<Orden> orders = orderService.getOrdersByCustomer(currentCustomer.getId());
 
-            // Limpiar la tabla
+
             tableModel.setRowCount(0);
 
             for (Orden order : orders) {
@@ -231,13 +231,13 @@ public class FrameCustomer extends JFrame implements Observer {
                         .orElse("Ninguno");
                 tableModel.addRow(new Object[]{
                         order.getId(),
-                        currentCustomer.getName(), // Nombre del cliente actual
+                        currentCustomer.getName(),
                         productNames,
                         order.getStatus()
                 });
             }
         } else {
-            // Manejo del caso donde el cliente actual es null
+
             tableModel.setRowCount(0);
             tableModel.addRow(new Object[]{
                     "Error", "No hay cliente actual", "", ""

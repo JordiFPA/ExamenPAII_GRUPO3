@@ -8,8 +8,8 @@ public class BuildProcess implements IBuildable {
     @Override
     public void build(Runnable updateProgress) {
         try {
-            // Simula el tiempo de corte
-            Thread.sleep(20000); // 2 segundos para el corte
+
+            Thread.sleep(20000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

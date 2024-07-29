@@ -106,70 +106,66 @@ public class Container implements Observable {
             statusUpdater.accept("Orden no encontrada.");
             return;
         }
-        currentOrder = order; // Actualizar currentOrder con la orden obtenida
-        // Actualizar el estado a "Fabricando"
+        currentOrder = order;
         order.setStatus("Fabricando");
-        orderService.saveOrder(order);  // Asegurarse de guardar el estado actualizado en la base de datos
-        notificar();
-
-        // Configurar el progreso inicial
+        orderService.saveOrder(order);
         progressBar.setValue(0);
 
-        // Crear un contador atómico para las etapas completadas
+
         AtomicInteger stepsCompleted = new AtomicInteger(0);
 
-        // Ejecutar el proceso de fabricación en un hilo separado
+
         executorService.submit(() -> {
             try {
                 List<Product> productList = order.getProducts();
                 int totalProducts = productList.size();
-                int totalSteps = totalProducts * 4; // Total de etapas (4 etapas por producto)
-                int progressStep = 100 / totalSteps; // Dividir el progreso total entre el número de etapas
+                int totalSteps = totalProducts * 4;
+                int progressStep = 100 / totalSteps;
 
                 for (Product product : productList) {
-                    // Corte
+
                     statusUpdater.accept("Corte en marcha para producto: " + product.getName());
                     manufacturingProcess.cut(() -> SwingUtilities.invokeLater(() -> {
                         stepsCompleted.incrementAndGet();
                         updateProgressBar(progressBar, stepsCompleted.get(), totalSteps);
                     }));
                     statusUpdater.accept("Corte completado para producto: " + product.getName());
-                    notificar(); // Notificar a los observadores
+                    notificar();
 
-                    // Pintura
+
                     statusUpdater.accept("Pintura en marcha para producto: " + product.getName());
                     manufacturingProcess.paint(() -> SwingUtilities.invokeLater(() -> {
                         stepsCompleted.incrementAndGet();
                         updateProgressBar(progressBar, stepsCompleted.get(), totalSteps);
                     }));
                     statusUpdater.accept("Pintura completada para producto: " + product.getName());
-                    notificar(); // Notificar a los observadores
+                    notificar();
 
-                    // Pulido
+
                     statusUpdater.accept("Pulido en marcha para producto: " + product.getName());
                     manufacturingProcess.polish(() -> SwingUtilities.invokeLater(() -> {
                         stepsCompleted.incrementAndGet();
                         updateProgressBar(progressBar, stepsCompleted.get(), totalSteps);
                     }));
                     statusUpdater.accept("Pulido completado para producto: " + product.getName());
-                    notificar(); // Notificar a los observadores
+                    notificar();
 
-                    // Ensamblaje
+
                     statusUpdater.accept("Ensamblaje en marcha para producto: " + product.getName());
                     manufacturingProcess.build(() -> SwingUtilities.invokeLater(() -> {
                         stepsCompleted.incrementAndGet();
                         updateProgressBar(progressBar, stepsCompleted.get(), totalSteps);
                     }));
                     statusUpdater.accept("Ensamblaje completado para producto: " + product.getName());
-                    notificar(); // Notificar a los observadores
+                    notificar();
                 }
 
-                // Actualizar el estado a "Listo" después de fabricar todos los productos
+
                 order.setStatus("Listo");
-                orderService.saveOrder(order);  // Asegurarse de guardar el estado actualizado en la base de datos
+                orderService.saveOrder(order);
                 statusUpdater.accept("Orden fabricada: " + order.getId());
-                SwingUtilities.invokeLater(() -> progressBar.setValue(100)); // Asegurarse de que la barra de progreso esté al 100%
-                notificar(); // Notificar a los observadores
+                SwingUtilities.invokeLater(() -> progressBar.setValue(100));
+                notificar();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 SwingUtilities.invokeLater(() -> {

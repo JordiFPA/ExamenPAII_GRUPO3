@@ -8,7 +8,7 @@ public class PolishProcess implements IPolishable {
     @Override
     public void polish(Runnable updateProgress) {
         try {
-            Thread.sleep(20000);// 10 segundos para el corte
+            Thread.sleep(20000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

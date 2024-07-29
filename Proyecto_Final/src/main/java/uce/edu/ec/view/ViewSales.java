@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 public class ViewSales extends JFrame {
@@ -64,8 +65,11 @@ public class ViewSales extends JFrame {
     }
 
     private void loadSales() {
-        List<Orden> sales = orderService.getAllOrders();
-        tableModel.setRowCount(0); // Limpiar la tabla antes de agregar nuevas filas
+        List<Orden> sales = orderService.getAllOrders()
+                .stream()
+                .filter(sale -> "Listo".equals(sale.getStatus()))
+                .collect(Collectors.toList());
+        tableModel.setRowCount(0);
         for (Orden sale : sales) {
             StringBuilder productsBuilder = new StringBuilder();
             sale.getProducts().forEach(product -> productsBuilder.append(product.getName()).append(", "));

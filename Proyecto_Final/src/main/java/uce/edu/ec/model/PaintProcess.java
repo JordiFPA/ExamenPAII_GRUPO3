@@ -8,8 +8,8 @@ public class PaintProcess implements IPaint {
     @Override
     public void paint(Runnable updateProgress) {
         try {
-            // Simula el tiempo de corte
-            Thread.sleep(10000); // 10 segundos para el corte
+
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

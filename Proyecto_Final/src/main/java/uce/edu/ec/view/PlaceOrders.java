@@ -92,25 +92,25 @@ public class PlaceOrders extends JFrame {
         btnFabricarPedido.setBorder(buttonBorder1);
         btnFabricarPedido.setForeground(Color.BLACK);
         btnFabricarPedido.addActionListener(e -> {
-            // Pedir el ID de la orden
+
             String input = JOptionPane.showInputDialog(PlaceOrders.this, "Ingrese el ID de la orden a fabricar:");
             if (input != null && !input.trim().isEmpty()) {
                 try {
                     long orderId = Long.parseLong(input.trim());
-                    // Obtener la orden
+
                     Orden order = orderService.getOrderById(orderId);
                     if (order != null) {
-                        // Crear y mostrar el cuadro de diálogo de progreso en el hilo de eventos de Swing
+
                         JDialog progressDialog = new JDialog(PlaceOrders.this, "Fabricando...", true);
                         progressDialog.setLayout(new BorderLayout());
 
-                        // Crear y configurar la barra de progreso
+
                         JProgressBar progressBar = new JProgressBar(0, 100);
                         progressBar.setValue(0);
                         progressBar.setStringPainted(true);
                         progressDialog.add(progressBar, BorderLayout.NORTH);
 
-                        // Configurar el JTextArea
+
                         JTextArea textArea = new JTextArea();
                         textArea.setEditable(false);
                         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -119,10 +119,10 @@ public class PlaceOrders extends JFrame {
                         progressDialog.setSize(400, 300);
                         progressDialog.setLocationRelativeTo(PlaceOrders.this);
 
-                        // Mostrar el cuadro de diálogo de progreso
+
                         SwingUtilities.invokeLater(() -> progressDialog.setVisible(true));
 
-                        // Ejecutar el proceso de fabricación en un hilo separado
+
                         new Thread(() -> {
                             try {
                                 container.executeManufacturingProcess(orderId,
@@ -187,41 +187,41 @@ public class PlaceOrders extends JFrame {
         mainPanel.setBackground(new Color(255, 255, 153));
         mainPanel.setLayout(new BorderLayout());
 
-        // Panel para la tabla
+
         tablePanel = new JPanel();
-        tablePanel.setBackground(new Color(255, 255, 153)); // Coincidir con el color de mainPanel
+        tablePanel.setBackground(new Color(255, 255, 153));
         tablePanel.setLayout(new BorderLayout());
         tablePanel.add(tableScrollPane, BorderLayout.CENTER);
 
-        // Panel para los botones
+
         buttonPanel = new JPanel();
-        buttonPanel.setBackground(new Color(255, 255, 153)); // Coincidir con el color de mainPanel
+        buttonPanel.setBackground(new Color(255, 255, 153));
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        buttonPanel.add(Box.createVerticalGlue()); // Añadir espacio arriba
+        buttonPanel.add(Box.createVerticalGlue());
         buttonPanel.add(btnFabricarPedido);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(btnEliminarPedido);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(btnSalir);
-        buttonPanel.add(Box.createVerticalGlue()); // Añadir espacio abajo
+        buttonPanel.add(Box.createVerticalGlue());
 
-        // Agregar jLabels a un panel adicional
+
         JPanel labelPanel = new JPanel();
-        labelPanel.setBackground(new Color(255, 255, 153)); // Coincidir con el color de mainPanel
+        labelPanel.setBackground(new Color(255, 255, 153));
         labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
         labelPanel.add(jLabel1);
-        labelPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre imagen y texto
+        labelPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         labelPanel.add(jLabel2);
-        labelPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre etiquetas
+        labelPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         labelPanel.add(jLabel4);
-        labelPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre etiquetas
+        labelPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         labelPanel.add(jLabel3);
-        labelPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre etiquetas
+        labelPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         labelPanel.add(jLabel5);
 
-        mainPanel.add(labelPanel, BorderLayout.NORTH); // Agregar labelPanel al norte
-        mainPanel.add(tablePanel, BorderLayout.CENTER); // Colocar la tabla a la izquierda (centro)
-        mainPanel.add(buttonPanel, BorderLayout.EAST); // Colocar los botones a la derecha
+        mainPanel.add(labelPanel, BorderLayout.NORTH);
+        mainPanel.add(tablePanel, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.EAST);
 
         add(mainPanel);
 
@@ -230,16 +230,16 @@ public class PlaceOrders extends JFrame {
         setSize(800, 600);
         setLocationRelativeTo(null);
 
-        // Inicializar y configurar el Timer para actualizar los pedidos cada 5 segundos
+
         timer = new Timer(5000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                loadOrders(); // Actualiza la tabla de pedidos
+                loadOrders();
             }
         });
-        timer.start(); // Inicia el Timer
+        timer.start();
 
-        // Detener el Timer cuando la ventana se cierre
+
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -254,7 +254,7 @@ public class PlaceOrders extends JFrame {
 
     private void loadOrders() {
         List<Orden> orders = orderService.getAllOrders();
-        tableModel.setRowCount(0); // Limpiar la tabla antes de agregar nuevas filas
+        tableModel.setRowCount(0);
         for (Orden order : orders) {
             StringBuilder productsBuilder = new StringBuilder();
             for (Product product : order.getProducts()) {
@@ -262,7 +262,7 @@ public class PlaceOrders extends JFrame {
             }
             String products = productsBuilder.toString();
             if (products.length() > 0) {
-                products = products.substring(0, products.length() - 2); // Eliminar la última coma y espacio
+                products = products.substring(0, products.length() - 2);
             }
             tableModel.addRow(new Object[]{order.getId(), order.getCustomer().getId(), products, order.getStatus()});
         }

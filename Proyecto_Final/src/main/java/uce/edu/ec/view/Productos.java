@@ -144,18 +144,18 @@ public class Productos extends JFrame {
                 while (producto.isEmpty()) {
                     producto = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto");
                     if (producto != null) {
-                        producto = producto.trim().toUpperCase(); // Elimina espacios en blanco y convierte a mayúsculas
+                        producto = producto.trim().toUpperCase();
                     }
                     if (producto.isEmpty()) {
                         JOptionPane.showMessageDialog(null, "El nombre del producto no puede estar vacío. Por favor, ingrese un valor.");
                     }
                 }
                 jTextField1.setText(producto);
-                updateButtonColors(jButton4);// Actualiza el campo de texto con el nombre del producto
+                updateButtonColors(jButton4);
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 3, 16)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 3, 16));
         jLabel2.setText("Seleccionar Material:");
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"SELECCIONE", "MADERA", "METAL", "PLASTICO"}));
@@ -166,7 +166,7 @@ public class Productos extends JFrame {
         });
 
 
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        jTextField1.setFont(new java.awt.Font("Segoe UI", 3, 14));
 
         tableModel = new DefaultTableModel(
                 new Object[][]{},
@@ -177,7 +177,7 @@ public class Productos extends JFrame {
         jTable2.setUpdateSelectionOnSort(false);
         jScrollPane2.setViewportView(jTable2);
 
-        jButton5.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        jButton5.setFont(new java.awt.Font("Segoe UI", 3, 14));
         jButton5.setText("AGREGAR PRODUCTO");
         jButton5.setPreferredSize(buttonSize);
         jButton5.setBackground(new Color(255, 255, 255));
@@ -243,7 +243,7 @@ public class Productos extends JFrame {
                 frameCustomer.setVisible(true);
                 dispose();
                 PlaceOrders placeOrders = context.getBean(PlaceOrders.class);
-                // placeOrders.updateOrdersAdmi();
+
 
             }
         });
@@ -346,24 +346,24 @@ public class Productos extends JFrame {
             for (int i = 0; i < rowCount; i++) {
                 String nombre = (String) tableModel.getValueAt(i, 0);
                 String material = (String) tableModel.getValueAt(i, 1);
-                Product product = new Product(nombre, material); // Ajusta los parámetros al constructor correcto
+                Product product = new Product(nombre, material);
 
-                // Si el producto ya existe en la base de datos, obtén su ID
-                Product existingProduct = productService.getProductByNameAndMaterial(nombre, material); // Debes crear este método en ProductService y ProductRepository
+
+                Product existingProduct = productService.getProductByNameAndMaterial(nombre, material);
                 if (existingProduct != null) {
                     product.setId(existingProduct.getId());
                 } else {
-                    product = productService.saveProduct(product); // Guarda el producto y obtiene su ID
+                    product = productService.saveProduct(product);
                 }
 
                 productList.add(product);
             }
 
-            // Crear la orden usando el Container
+
             try {
                 container.createOrder(container.getCustomer().getId(), productList, "Pendiente");
                 JOptionPane.showMessageDialog(this, "Pedido realizado exitosamente.");
-                tableModel.setRowCount(0); // Limpiar la tabla después de realizar el pedido
+                tableModel.setRowCount(0);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Error al realizar el pedido: " + e.getMessage());
             }
@@ -379,7 +379,7 @@ public class Productos extends JFrame {
             if (button.equals(clickedButton)) {
                 button.setBackground(HIGHLIGHT_COLOR);
             } else {
-                button.setBackground(Color.WHITE); // Restaurar el color original
+                button.setBackground(Color.WHITE);
             }
         }
     }
