@@ -74,8 +74,10 @@ public class FrameCustomer extends JFrame implements Observer {
         jLabel1.setIcon(new ImageIcon(getClass().getResource("/logoProgra.jpg"))); // Asegúrate de que esta ruta sea correcta
         jLabel2.setText("Hola");
         jLabel2.setBorder(BorderFactory.createEtchedBorder());
+        jLabel2.setFont(new Font("Times New Roman", Font.BOLD, 18));
 
         jLabel3.setText("Aquí puedes ver tu historial de pedidos o realizar un nuevo pedido");
+        jLabel3.setFont(new Font("Times New Roman", Font.BOLD, 18));
         jLabel5.setText(" ");
         Dimension buttonSize = new Dimension(220, 60); // Ajustar tamaño aquí
         btnRealizarPedido.setMinimumSize(buttonSize);

@@ -64,6 +64,7 @@ public class PlaceOrders extends JFrame {
         jLabel1.setIcon(new ImageIcon(getClass().getResource("/logoProgra.jpg")));
         jLabel2.setText("LISTA DE PEDIDOS");
         jLabel2.setBorder(BorderFactory.createEtchedBorder());
+        jLabel2.setFont(new Font("Times New Roman", Font.BOLD, 18));
         jLabel3.setText(" ");
         jLabel4.setText(" ");
         jLabel5.setText(" ");

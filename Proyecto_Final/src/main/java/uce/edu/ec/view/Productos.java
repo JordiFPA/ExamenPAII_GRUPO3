@@ -19,6 +19,7 @@ import java.util.List;
 @Component
 public class Productos extends JFrame {
 
+    private static final Color HIGHLIGHT_COLOR = new Color(255, 223, 186);
     @Autowired
     private ApplicationContext context;
     @Autowired
@@ -92,6 +93,7 @@ public class Productos extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 producto = "SILLA";
                 jTextField1.setText(producto);
+                updateButtonColors(jButton1);
             }
         });
 
@@ -106,6 +108,7 @@ public class Productos extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 producto = "ESCRITORIO";
                 jTextField1.setText(producto);
+                updateButtonColors(jButton2);
             }
         });
 
@@ -120,6 +123,7 @@ public class Productos extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 producto = "ARMARIO";
                 jTextField1.setText(producto);
+                updateButtonColors(jButton3);
             }
         });
 
@@ -142,7 +146,8 @@ public class Productos extends JFrame {
                         JOptionPane.showMessageDialog(null, "El nombre del producto no puede estar vacío. Por favor, ingrese un valor.");
                     }
                 }
-                jTextField1.setText(producto); // Actualiza el campo de texto con el nombre del producto
+                jTextField1.setText(producto);
+                updateButtonColors(jButton4);// Actualiza el campo de texto con el nombre del producto
             }
         });
 
@@ -360,6 +365,18 @@ public class Productos extends JFrame {
             }
         } else {
             JOptionPane.showMessageDialog(this, "No hay productos en la lista para hacer el pedido.");
+        }
+    }
+
+    private void updateButtonColors(JButton clickedButton) {
+        JButton[] buttons = {jButton1, jButton2, jButton3, jButton4};
+
+        for (JButton button : buttons) {
+            if (button.equals(clickedButton)) {
+                button.setBackground(HIGHLIGHT_COLOR);
+            } else {
+                button.setBackground(Color.WHITE); // Restaurar el color original
+            }
         }
     }
 }
