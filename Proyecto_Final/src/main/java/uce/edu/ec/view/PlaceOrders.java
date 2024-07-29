@@ -26,7 +26,7 @@ public class PlaceOrders extends JFrame {
     @Autowired
     private Container container;
 
-    private JButton btnFabricarPedido, btnEliminarPedido, btnSalir;
+    private JButton btnFabricarPedido, btnEliminarPedido, btnSalir, btnRegresar;
     private JTable tableOrders;
     private DefaultTableModel tableModel;
     private JPanel mainPanel;
@@ -49,6 +49,7 @@ public class PlaceOrders extends JFrame {
         btnFabricarPedido = new JButton("Mandar a Fabricar");
         btnEliminarPedido = new JButton("Eliminar Pedido");
         btnSalir = new JButton("Salir");
+        btnRegresar = new JButton("Regresar");
         jLabel1 = new JLabel();
         jLabel2 = new JLabel();
         jLabel3 = new JLabel();
@@ -71,11 +72,10 @@ public class PlaceOrders extends JFrame {
         jLabel3.setText(" ");
         jLabel4.setText(" ");
         jLabel5.setText(" ");
-        Dimension buttonSize = new Dimension(220, 60); // Ajustar tamaño aquí
+        Dimension buttonSize = new Dimension(220, 60);
         btnFabricarPedido.setMinimumSize(buttonSize);
         btnFabricarPedido.setMaximumSize(buttonSize);
         btnFabricarPedido.setPreferredSize(buttonSize);
-
 
         btnEliminarPedido.setMinimumSize(buttonSize);
         btnEliminarPedido.setMaximumSize(buttonSize);
@@ -84,6 +84,10 @@ public class PlaceOrders extends JFrame {
         btnSalir.setMinimumSize(buttonSize);
         btnSalir.setMaximumSize(buttonSize);
         btnSalir.setPreferredSize(buttonSize);
+
+        btnRegresar.setMinimumSize(buttonSize);
+        btnRegresar.setMaximumSize(buttonSize);
+        btnRegresar.setPreferredSize(buttonSize);
 
         Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);
 
@@ -104,12 +108,10 @@ public class PlaceOrders extends JFrame {
                         JDialog progressDialog = new JDialog(PlaceOrders.this, "Fabricando...", true);
                         progressDialog.setLayout(new BorderLayout());
 
-
                         JProgressBar progressBar = new JProgressBar(0, 100);
                         progressBar.setValue(0);
                         progressBar.setStringPainted(true);
                         progressDialog.add(progressBar, BorderLayout.NORTH);
-
 
                         JTextArea textArea = new JTextArea();
                         textArea.setEditable(false);
@@ -119,9 +121,7 @@ public class PlaceOrders extends JFrame {
                         progressDialog.setSize(400, 300);
                         progressDialog.setLocationRelativeTo(PlaceOrders.this);
 
-
                         SwingUtilities.invokeLater(() -> progressDialog.setVisible(true));
-
 
                         new Thread(() -> {
                             try {
@@ -145,7 +145,6 @@ public class PlaceOrders extends JFrame {
                 }
             }
         });
-
 
         btnEliminarPedido.setBackground(Color.WHITE);
         btnEliminarPedido.setOpaque(true);
@@ -183,16 +182,26 @@ public class PlaceOrders extends JFrame {
             dispose();
         });
 
+        btnRegresar.setBackground(Color.WHITE);
+        btnRegresar.setOpaque(true);
+        btnRegresar.setBorder(buttonBorder1);
+        btnRegresar.setForeground(Color.BLACK);
+        btnRegresar.addActionListener(e -> {
+            FrameAdmin frameAdmin = context.getBean(FrameAdmin.class);
+            frameAdmin.setSize(getSize());
+            frameAdmin.setLocationRelativeTo(null);
+            frameAdmin.setVisible(true);
+            dispose();
+        });
+
         mainPanel = new JPanel();
         mainPanel.setBackground(new Color(255, 255, 153));
         mainPanel.setLayout(new BorderLayout());
-
 
         tablePanel = new JPanel();
         tablePanel.setBackground(new Color(255, 255, 153));
         tablePanel.setLayout(new BorderLayout());
         tablePanel.add(tableScrollPane, BorderLayout.CENTER);
-
 
         buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(255, 255, 153));
@@ -202,16 +211,16 @@ public class PlaceOrders extends JFrame {
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(btnEliminarPedido);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        buttonPanel.add(btnRegresar);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(btnSalir);
         buttonPanel.add(Box.createVerticalGlue());
-
 
         JPanel labelPanel = new JPanel();
         labelPanel.setBackground(new Color(255, 255, 153));
         labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
         labelPanel.add(jLabel1);
         labelPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        labelPanel.add(jLabel2);
         labelPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         labelPanel.add(jLabel4);
         labelPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -222,14 +231,12 @@ public class PlaceOrders extends JFrame {
         mainPanel.add(labelPanel, BorderLayout.NORTH);
         mainPanel.add(tablePanel, BorderLayout.CENTER);
         mainPanel.add(buttonPanel, BorderLayout.EAST);
-
         add(mainPanel);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Place Orders");
         setSize(800, 600);
         setLocationRelativeTo(null);
-
 
         timer = new Timer(5000, new ActionListener() {
             @Override
@@ -238,7 +245,6 @@ public class PlaceOrders extends JFrame {
             }
         });
         timer.start();
-
 
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override

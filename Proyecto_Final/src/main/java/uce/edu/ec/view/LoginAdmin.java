@@ -9,8 +9,6 @@ import uce.edu.ec.model.Administrator;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Objects;
@@ -64,26 +62,16 @@ public class LoginAdmin extends JFrame {
         jLabel2.setFont(new Font("Segoe UI", Font.BOLD, 18));
         jLabel2.setText("CONTRASEÑA:");
 
-
         Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);
 
         jButton2.setFont(new Font("Segoe UI", Font.BOLD, 14));
         jButton2.setText("Ingresar");
         jButton2.setPreferredSize(new Dimension(150, 60));
         jButton2.setBackground(new Color(255, 255, 255));
-        jButton2.setOpaque(true);
+        jButton2.setOpaque(true); // Asegura que el fondo sea visible
         jButton2.setBorder(buttonBorder1);
         jButton2.setForeground(Color.BLACK);
         jButton2.addActionListener(evt -> authenticateAdmin());
-
-        jPasswordField1.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    authenticateAdmin();
-                }
-            }
-        });
 
         jLabel4.setFont(new Font("Segoe UI", Font.BOLD, 18));
         jLabel4.setText("USUARIO:");
@@ -92,7 +80,7 @@ public class LoginAdmin extends JFrame {
         jButton3.setText("Volver");
         jButton3.setPreferredSize(new Dimension(150, 60));
         jButton3.setBackground(new Color(255, 255, 255));
-        jButton3.setOpaque(true);
+        jButton3.setOpaque(true); // Asegura que el fondo sea visible
         jButton3.setBorder(buttonBorder1);
         jButton3.setForeground(Color.BLACK);
         jButton3.addActionListener(evt -> {
@@ -104,16 +92,29 @@ public class LoginAdmin extends JFrame {
         });
 
         showPasswordCheckBox.setBackground(new Color(255, 255, 153));
-        showPasswordCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (showPasswordCheckBox.isSelected()) {
-                    jPasswordField1.setEchoChar((char) 0);
-                } else {
-                    jPasswordField1.setEchoChar('•');
-                }
+        showPasswordCheckBox.addActionListener(e -> {
+            if (showPasswordCheckBox.isSelected()) {
+                jPasswordField1.setEchoChar((char) 0);
+            } else {
+                jPasswordField1.setEchoChar('•');
             }
         });
+
+        KeyAdapter enterKeyListener = new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if (e.getSource() == jTextField1) {
+                        jPasswordField1.requestFocus();
+                    } else if (e.getSource() == jPasswordField1) {
+                        authenticateAdmin();
+                    }
+                }
+            }
+        };
+
+        jTextField1.addKeyListener(enterKeyListener);
+        jPasswordField1.addKeyListener(enterKeyListener);
 
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -182,7 +183,6 @@ public class LoginAdmin extends JFrame {
         String name = jTextField1.getText();
         String password = new String(jPasswordField1.getPassword());
 
-
         if (name.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los datos.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
             return;
@@ -195,7 +195,6 @@ public class LoginAdmin extends JFrame {
                 frameAdmin.setSize(getSize());
                 frameAdmin.setLocationRelativeTo(null);
                 frameAdmin.setVisible(true);
-
                 jTextField1.setText("");
                 jPasswordField1.setText("");
                 dispose();

@@ -26,6 +26,7 @@ public class ViewSales extends JFrame {
         this.orderService = orderService;
         this.context = context;
         initComponents();
+        startPeriodicUpdate();
     }
 
     private void initComponents() {
@@ -60,8 +61,6 @@ public class ViewSales extends JFrame {
         setTitle("Ventas");
         setSize(800, 600);
         setLocationRelativeTo(null);
-
-        loadSales();
     }
 
     private void loadSales() {
@@ -69,6 +68,7 @@ public class ViewSales extends JFrame {
                 .stream()
                 .filter(sale -> "Listo".equals(sale.getStatus()))
                 .collect(Collectors.toList());
+
         tableModel.setRowCount(0);
         for (Orden sale : sales) {
             StringBuilder productsBuilder = new StringBuilder();
@@ -76,5 +76,10 @@ public class ViewSales extends JFrame {
             String products = productsBuilder.length() > 0 ? productsBuilder.substring(0, productsBuilder.length() - 2) : "";
             tableModel.addRow(new Object[]{sale.getId(), sale.getCustomer().getId(), products, sale.getStatus()});
         }
+    }
+
+    private void startPeriodicUpdate() {
+        Timer timer = new Timer(5000, e -> loadSales());
+        timer.start();
     }
 }
