@@ -37,9 +37,9 @@ public class FrameCustomer extends JFrame implements Observer {
     private JLabel jLabel4;
     private JLabel jLabel5;
 
-    private Customer currentCustomer;
-    private JTextArea statusTextArea;
-    private Timer statusUpdateTimer;
+    private Customer currentCustomer; // Campo para almacenar el cliente actual
+    private JTextArea statusTextArea; // JTextArea para mostrar los mensajes de estado
+    private Timer statusUpdateTimer; // Timer para actualizar los mensajes de estado
 
     @Autowired
     public FrameCustomer(OrderService orderService, ApplicationContext context, Container container) {
@@ -49,7 +49,7 @@ public class FrameCustomer extends JFrame implements Observer {
         this.context = context;
 
         initComponents();
-        startStatusUpdateTimer();
+        startStatusUpdateTimer(); // Iniciar el timer para actualizar los mensajes
     }
 
     private void initComponents() {
@@ -70,17 +70,31 @@ public class FrameCustomer extends JFrame implements Observer {
         );
         tableOrders = new JTable(tableModel);
         JScrollPane tableScrollPane = new JScrollPane(tableOrders);
+
+        // Establecer tamaño preferido para el JScrollPane con altura menor
         tableScrollPane.setPreferredSize(new Dimension(500, 200)); // Ajustar tamaño aquí
+
+        // Configuración de jLabel1 con la imagen
         jLabel1.setIcon(new ImageIcon(getClass().getResource("/logoProgra.jpg"))); // Asegúrate de que esta ruta sea correcta
+
+        // Configuración de jLabel2 y jLabel3
         jLabel2.setText("Hola");
         jLabel2.setBorder(BorderFactory.createEtchedBorder());
+        jLabel2.setFont(new Font("Times New Roman", Font.BOLD, 18));
 
         jLabel3.setText("Aquí puedes ver tu historial de pedidos o realizar un nuevo pedido");
+        jLabel3.setFont(new Font("Times New Roman", Font.BOLD, 18));
+
+        // Configuración de jLabel4 y jLabel5
+        jLabel4.setText(" ");
         jLabel5.setText(" ");
+
+        // Hacer que los botones sean un poco más grandes
         Dimension buttonSize = new Dimension(220, 60); // Ajustar tamaño aquí
         btnRealizarPedido.setMinimumSize(buttonSize);
         btnRealizarPedido.setMaximumSize(buttonSize);
         btnRealizarPedido.setPreferredSize(buttonSize);
+
         btnSalir.setMinimumSize(buttonSize);
         btnSalir.setMaximumSize(buttonSize);
         btnSalir.setPreferredSize(buttonSize);
@@ -126,21 +140,24 @@ public class FrameCustomer extends JFrame implements Observer {
         mainPanel.setBackground(new Color(255, 255, 153));
         mainPanel.setLayout(new BorderLayout());
 
-
+        // Panel para la tabla
         tablePanel = new JPanel();
-        tablePanel.setBackground(new Color(255, 255, 153));
+        tablePanel.setBackground(new Color(255, 255, 153)); // Coincidir con el color de mainPanel
         tablePanel.setLayout(new BorderLayout());
         tablePanel.add(tableScrollPane, BorderLayout.CENTER);
-        tablePanel.add(statusScrollPane, BorderLayout.SOUTH);
+        tablePanel.add(statusScrollPane, BorderLayout.SOUTH); // Añadir JTextArea al sur del panel de la tabla
+
+        // Panel para los botones
         buttonPanel = new JPanel();
-        buttonPanel.setBackground(new Color(255, 255, 153));
+        buttonPanel.setBackground(new Color(255, 255, 153)); // Coincidir con el color de mainPanel
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.add(Box.createVerticalGlue()); // Añadir espacio arriba
         buttonPanel.add(btnRealizarPedido);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(btnSalir);
-        buttonPanel.add(Box.createVerticalGlue());
+        buttonPanel.add(Box.createVerticalGlue()); // Añadir espacio abajo
 
+        // Agregar jLabels a un panel adicional
         JPanel labelPanel = new JPanel();
         labelPanel.setBackground(new Color(255, 255, 153)); // Coincidir con el color de mainPanel
         labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
@@ -154,6 +171,7 @@ public class FrameCustomer extends JFrame implements Observer {
         labelPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre etiquetas
         labelPanel.add(jLabel5);
 
+        // Agregar los paneles a mainPanel
         mainPanel.add(labelPanel, BorderLayout.NORTH);
         mainPanel.add(tablePanel, BorderLayout.CENTER);
         mainPanel.add(buttonPanel, BorderLayout.EAST);
@@ -165,13 +183,13 @@ public class FrameCustomer extends JFrame implements Observer {
         setLocationRelativeTo(null);
     }
 
-
+    // Método para iniciar el Timer que actualizará los mensajes de estado y la tabla
     private void startStatusUpdateTimer() {
-        statusUpdateTimer = new Timer(5000, new ActionListener() {
+        statusUpdateTimer = new Timer(5000, new ActionListener() { // Actualiza cada 5 segundos
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateOrderTable();
-                updateOrderStatusMessages();
+                updateOrderTable(); // Actualiza la tabla de pedidos
+                updateOrderStatusMessages(); // Actualiza los mensajes de estado
             }
         });
         statusUpdateTimer.start();
@@ -181,7 +199,7 @@ public class FrameCustomer extends JFrame implements Observer {
     public void updateCustomerInfo(Customer customer) {
         this.currentCustomer = customer; // Establecer el cliente actual
         jLabel2.setText("Hola " + customer.getName());
-        loadOrders(); //
+        loadOrders(); // Cargar las órdenes del cliente
     }
 
     private void loadOrders() {
@@ -276,3 +294,4 @@ public class FrameCustomer extends JFrame implements Observer {
         }
     }
 }
+
