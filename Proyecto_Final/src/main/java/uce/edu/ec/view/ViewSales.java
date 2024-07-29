@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class ViewSales extends JFrame {
@@ -34,6 +35,9 @@ public class ViewSales extends JFrame {
         tableSales = new JTable(tableModel);
         JScrollPane tableScrollPane = new JScrollPane(tableSales);
         tableScrollPane.setPreferredSize(new Dimension(500, 200));
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Logoicon.png"))).getImage());
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         JButton btnClose = new JButton("Cerrar");
         btnClose.addActionListener(e -> {

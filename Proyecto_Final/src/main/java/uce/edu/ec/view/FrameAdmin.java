@@ -9,6 +9,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 
 @Component
 public class FrameAdmin extends javax.swing.JFrame {
@@ -26,7 +27,9 @@ public class FrameAdmin extends javax.swing.JFrame {
         jButton1 = new JButton();
         jButton2 = new JButton();
         jButton3 = new JButton();
-
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Logoicon.png"))).getImage());
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);

@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Objects;
 
 @Component
 public class LoginAdmin extends JFrame {
@@ -48,6 +49,9 @@ public class LoginAdmin extends JFrame {
         jPasswordField1 = new JPasswordField();
         jButton3 = new JButton();
         showPasswordCheckBox = new JCheckBox("Mostrar Contraseña");
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Logoicon.png"))).getImage());
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 

@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Objects;
 
 @Component
 public class LoginCustomer extends JFrame {
@@ -54,6 +55,10 @@ public class LoginCustomer extends JFrame {
         jPasswordField1 = new JPasswordField();
         showPasswordCheckBox = new JCheckBox("Mostrar Contraseña");
         jButton3 = new JButton();
+
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Logoicon.png"))).getImage());
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 

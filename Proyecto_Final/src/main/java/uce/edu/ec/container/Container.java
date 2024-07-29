@@ -106,6 +106,7 @@ public class Container implements Observable {
             statusUpdater.accept("Orden no encontrada.");
             return;
         }
+        currentOrder = order; // Actualizar currentOrder con la orden obtenida
         // Actualizar el estado a "Fabricando"
         order.setStatus("Fabricando");
         orderService.saveOrder(order);  // Asegurarse de guardar el estado actualizado en la base de datos
@@ -185,7 +186,6 @@ public class Container implements Observable {
             progressBar.setValue(Math.min(progressValue, 100));
         });
     }
-
 
     @Override
     public void addObserver(Observer observer) {

@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class PlaceOrders extends JFrame {
@@ -53,7 +54,9 @@ public class PlaceOrders extends JFrame {
         jLabel3 = new JLabel();
         jLabel4 = new JLabel();
         jLabel5 = new JLabel();
-
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Logoicon.png"))).getImage());
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         tableModel = new DefaultTableModel(
                 new Object[][]{},
                 new String[]{"ID_Orden", "ID_Cliente", "Productos", "Estado"}

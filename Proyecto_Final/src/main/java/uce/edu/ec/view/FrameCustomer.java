@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class FrameCustomer extends JFrame implements Observer {
@@ -56,7 +57,9 @@ public class FrameCustomer extends JFrame implements Observer {
         // Inicialización de botones
         btnRealizarPedido = new JButton("Realizar Pedido");
         btnSalir = new JButton("Salir");
-
+        setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/Logoicon.png"))).getImage());
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         // Inicialización de etiquetas
         jLabel1 = new JLabel();
         jLabel2 = new JLabel();
