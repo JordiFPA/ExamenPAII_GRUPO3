@@ -12,6 +12,8 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 @Component
 public class LoginCustomer extends JFrame {
@@ -90,34 +92,14 @@ public class LoginCustomer extends JFrame {
         jButton2.setOpaque(true); // Asegura que el fondo sea visible
         jButton2.setBorder(buttonBorder1);
         jButton2.setForeground(Color.BLACK);
-        jButton2.addActionListener(evt -> {
-            String email = jTextField1.getText();
-            String password = new String(jPasswordField1.getPassword());
+        jButton2.addActionListener(evt -> authenticateUser());
 
-            // Verificar si los campos están llenos
-            if (email.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los datos.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            try {
-                Customer customer = customerService.findCustomerByEmailAndPassword(email, password);
-                if (customer != null) {
-                    container.setCustomer(customer); // Almacenar el cliente en el contenedor
-                    FrameCustomer frameCustomer = context.getBean(FrameCustomer.class);
-                    frameCustomer.updateCustomerInfo(customer); // Actualizar la información del cliente en FrameCustomer
-                    frameCustomer.setSize(getSize());
-                    frameCustomer.setLocationRelativeTo(null);
-                    frameCustomer.setVisible(true);
-                    // Limpiar los campos de entrada
-                    jTextField1.setText("");
-                    jPasswordField1.setText("");
-                    dispose();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Credenciales incorrectas.", "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+        jPasswordField1.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    authenticateUser();
                 }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de autenticación", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -211,5 +193,36 @@ public class LoginCustomer extends JFrame {
         );
 
         pack();
+    }
+
+    private void authenticateUser() {
+        String email = jTextField1.getText();
+        String password = new String(jPasswordField1.getPassword());
+
+        // Verificar si los campos están llenos
+        if (email.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los datos.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            Customer customer = customerService.findCustomerByEmailAndPassword(email, password);
+            if (customer != null) {
+                container.setCustomer(customer); // Almacenar el cliente en el contenedor
+                FrameCustomer frameCustomer = context.getBean(FrameCustomer.class);
+                frameCustomer.updateCustomerInfo(customer); // Actualizar la información del cliente en FrameCustomer
+                frameCustomer.setSize(getSize());
+                frameCustomer.setLocationRelativeTo(null);
+                frameCustomer.setVisible(true);
+                // Limpiar los campos de entrada
+                jTextField1.setText("");
+                jPasswordField1.setText("");
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Credenciales incorrectas.", "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

@@ -64,16 +64,14 @@ public class PlaceOrders extends JFrame {
         jLabel1.setIcon(new ImageIcon(getClass().getResource("/logoProgra.jpg")));
         jLabel2.setText("LISTA DE PEDIDOS");
         jLabel2.setBorder(BorderFactory.createEtchedBorder());
-        jLabel2.setFont(new Font("Times New Roman", Font.BOLD, 18));
-
         jLabel3.setText(" ");
         jLabel4.setText(" ");
         jLabel5.setText(" ");
-
         Dimension buttonSize = new Dimension(220, 60); // Ajustar tamaño aquí
         btnFabricarPedido.setMinimumSize(buttonSize);
         btnFabricarPedido.setMaximumSize(buttonSize);
         btnFabricarPedido.setPreferredSize(buttonSize);
+
 
         btnEliminarPedido.setMinimumSize(buttonSize);
         btnEliminarPedido.setMaximumSize(buttonSize);
@@ -109,7 +107,7 @@ public class PlaceOrders extends JFrame {
                         progressDialog.add(progressBar, BorderLayout.NORTH);
 
                         // Configurar el JTextArea
-                        textArea = new JTextArea();
+                        JTextArea textArea = new JTextArea();
                         textArea.setEditable(false);
                         JScrollPane scrollPane = new JScrollPane(textArea);
                         progressDialog.add(scrollPane, BorderLayout.CENTER);
@@ -126,13 +124,8 @@ public class PlaceOrders extends JFrame {
                                 container.executeManufacturingProcess(orderId,
                                         status -> SwingUtilities.invokeLater(() -> {
                                             textArea.append(status + "\n");
-                                            // Actualizar la barra de progreso aquí si es necesario
-                                            int progressValue = progressBar.getValue() + 10; // Ejemplo de incremento
-                                            progressBar.setValue(Math.min(progressValue, 100));
                                         }),
                                         progressBar);
-
-
                             } catch (Exception ex) {
                                 SwingUtilities.invokeLater(() -> {
                                     textArea.append("Error en el proceso de fabricación: " + ex.getMessage() + "\n");
@@ -148,6 +141,7 @@ public class PlaceOrders extends JFrame {
                 }
             }
         });
+
 
         btnEliminarPedido.setBackground(Color.WHITE);
         btnEliminarPedido.setOpaque(true);
@@ -270,4 +264,3 @@ public class PlaceOrders extends JFrame {
         }
     }
 }
-

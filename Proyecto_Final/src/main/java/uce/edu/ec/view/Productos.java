@@ -19,7 +19,6 @@ import java.util.List;
 @Component
 public class Productos extends JFrame {
 
-    private static final Color HIGHLIGHT_COLOR = new Color(255, 223, 186);;
     @Autowired
     private ApplicationContext context;
     @Autowired
@@ -92,7 +91,7 @@ public class Productos extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 producto = "SILLA";
-                updateButtonColors(jButton1);
+                jTextField1.setText(producto);
             }
         });
 
@@ -106,7 +105,7 @@ public class Productos extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 producto = "ESCRITORIO";
-                updateButtonColors(jButton2);
+                jTextField1.setText(producto);
             }
         });
 
@@ -120,23 +119,30 @@ public class Productos extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 producto = "ARMARIO";
-                updateButtonColors(jButton3);
+                jTextField1.setText(producto);
             }
         });
 
-        jButton4.setText("CAMA");
+        jButton4.setText("PRODUCTO A CREAR");
         jButton4.setPreferredSize(buttonSize);
         jButton4.setBackground(new Color(255, 255, 255));
         jButton4.setOpaque(true);
         jButton4.setBorder(buttonBorder);
         jButton4.setForeground(Color.BLACK);
-        jButton4.addActionListener(new ActionListener() {
 
+        jButton4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                producto = "CAMA";
-                updateButtonColors(jButton4);
-
+                while (producto.isEmpty()) {
+                    producto = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto");
+                    if (producto != null) {
+                        producto = producto.trim().toUpperCase(); // Elimina espacios en blanco y convierte a mayúsculas
+                    }
+                    if (producto.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "El nombre del producto no puede estar vacío. Por favor, ingrese un valor.");
+                    }
+                }
+                jTextField1.setText(producto); // Actualiza el campo de texto con el nombre del producto
             }
         });
 
@@ -182,6 +188,17 @@ public class Productos extends JFrame {
         jButton7.setOpaque(true);
         jButton7.setBorder(buttonBorder1);
         jButton7.setForeground(Color.BLACK);
+        jButton7.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = jTable2.getSelectedRow();
+                if (selectedRow != -1) {
+                    tableModel.removeRow(selectedRow);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Por favor, seleccione un producto para eliminar.");
+                }
+            }
+        });
 
         jButton8.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
         jButton8.setText("HACER PEDIDO");
@@ -302,7 +319,6 @@ public class Productos extends JFrame {
     }
 
     private void agregarProductoActionPerformed(java.awt.event.ActionEvent evt) {
-        String cantidad = jTextField1.getText();
         if (!producto.isEmpty() && !material.equals("SELECCIONE")) {
             tableModel.addRow(new Object[]{producto, material});
             producto = "";
@@ -346,16 +362,4 @@ public class Productos extends JFrame {
             JOptionPane.showMessageDialog(this, "No hay productos en la lista para hacer el pedido.");
         }
     }
-    private void updateButtonColors(JButton clickedButton) {
-        JButton[] buttons = {jButton1, jButton2, jButton3, jButton4};
-
-        for (JButton button : buttons) {
-            if (button.equals(clickedButton)) {
-                button.setBackground(HIGHLIGHT_COLOR);
-            } else {
-                button.setBackground(Color.WHITE); // Restaurar el color original
-            }
-        }
-    }
 }
-

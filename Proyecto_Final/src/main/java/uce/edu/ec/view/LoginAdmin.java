@@ -11,6 +11,8 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 @Component
 public class LoginAdmin extends JFrame {
@@ -68,32 +70,14 @@ public class LoginAdmin extends JFrame {
         jButton2.setOpaque(true); // Asegura que el fondo sea visible
         jButton2.setBorder(buttonBorder1);
         jButton2.setForeground(Color.BLACK);
-        jButton2.addActionListener(evt -> {
-            String name = jTextField1.getText();
-            String password = new String(jPasswordField1.getPassword());
+        jButton2.addActionListener(evt -> authenticateAdmin());
 
-            // Verificar si los campos están llenos
-            if (name.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los datos.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            try {
-                Administrator admin = administratorService.getAdministratorByNameAndPassword(name, password);
-                if (admin != null) {
-                    FrameAdmin frameAdmin = context.getBean(FrameAdmin.class);
-                    frameAdmin.setSize(getSize());
-                    frameAdmin.setLocationRelativeTo(null);
-                    frameAdmin.setVisible(true);
-                    // Limpiar los campos de entrada
-                    jTextField1.setText("");
-                    jPasswordField1.setText("");
-                    dispose();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Credenciales incorrectas.", "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+        jPasswordField1.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    authenticateAdmin();
                 }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de autenticación", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -188,5 +172,34 @@ public class LoginAdmin extends JFrame {
 
         pack();
         setLocationRelativeTo(null); // Centra la ventana
+    }
+
+    private void authenticateAdmin() {
+        String name = jTextField1.getText();
+        String password = new String(jPasswordField1.getPassword());
+
+        // Verificar si los campos están llenos
+        if (name.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese todos los datos.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            Administrator admin = administratorService.getAdministratorByNameAndPassword(name, password);
+            if (admin != null) {
+                FrameAdmin frameAdmin = context.getBean(FrameAdmin.class);
+                frameAdmin.setSize(getSize());
+                frameAdmin.setLocationRelativeTo(null);
+                frameAdmin.setVisible(true);
+                // Limpiar los campos de entrada
+                jTextField1.setText("");
+                jPasswordField1.setText("");
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Credenciales incorrectas.", "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

@@ -7,16 +7,6 @@ import uce.edu.ec.container.Container;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
-import uce.edu.ec.container.Container;
-
-import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
@@ -24,6 +14,8 @@ import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,8 +26,8 @@ public class CrearCuenta extends JFrame {
     private ApplicationContext context;
     @Autowired
     private Container container;
-    private JLabel jLabel1,jLabel2,jLabel3,jLabel4;
-    private JTextField jTextField1,jTextField3;
+    private JLabel jLabel1, jLabel2, jLabel3, jLabel4;
+    private JTextField jTextField1, jTextField3;
     private JPasswordField jPasswordField;
     private JButton jButton1;
     private JButton jButton2;
@@ -130,14 +122,7 @@ public class CrearCuenta extends JFrame {
         jButton2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                try {
-                    validateFields();
-                    container.registerCustomer(jTextField1.getText(), jTextField3.getText(), new String(jPasswordField.getPassword()));
-                    JOptionPane.showMessageDialog(null, "Cuenta creada exitosamente");
-                    clearFields();
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                crearCuenta();
             }
         });
 
@@ -151,6 +136,20 @@ public class CrearCuenta extends JFrame {
                 }
             }
         });
+
+        KeyAdapter enterKeyListener = new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    crearCuenta();
+                }
+            }
+        };
+
+        jTextField1.addKeyListener(enterKeyListener);
+        jTextField3.addKeyListener(enterKeyListener);
+        jPasswordField.addKeyListener(enterKeyListener);
+
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -220,6 +219,17 @@ public class CrearCuenta extends JFrame {
 
         pack();
         setLocationRelativeTo(null); // Centra la ventana
+    }
+
+    private void crearCuenta() {
+        try {
+            validateFields();
+            container.registerCustomer(jTextField1.getText(), jTextField3.getText(), new String(jPasswordField.getPassword()));
+            JOptionPane.showMessageDialog(null, "Cuenta creada exitosamente");
+            clearFields();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void validateFields() throws Exception {
