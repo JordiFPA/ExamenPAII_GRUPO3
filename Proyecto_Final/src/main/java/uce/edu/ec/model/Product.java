@@ -4,28 +4,25 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Entity
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private double price;
+    @Column
     private String name;
+    @Column
     private String material;
-    private int cantidad;
-
     @ManyToMany(mappedBy = "products")
     private List<Orden> ordens = new ArrayList<>();
 
     public Product() {
     }
 
-    public Product(double price, String name, String material, int cantidad) {
-        this.price = price;
+    public Product(String name, String material) {
         this.name = name;
         this.material = material;
-        this.cantidad = cantidad;
     }
 
     public long getId() {
@@ -44,14 +41,6 @@ public class Product {
         this.name = name;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public String getMaterial() {
         return material;
     }
@@ -68,11 +57,4 @@ public class Product {
         this.ordens = ordens;
     }
 
-    public int getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-    }
 }

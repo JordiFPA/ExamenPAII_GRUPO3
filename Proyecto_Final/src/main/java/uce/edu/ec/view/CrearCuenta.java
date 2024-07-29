@@ -34,13 +34,9 @@ public class CrearCuenta extends JFrame {
     private ApplicationContext context;
     @Autowired
     private Container container;
-    private JLabel jLabel1;
-    private JLabel jLabel2;
-    private JLabel jLabel3;
-    private JLabel jLabel4;
-    private JTextField jTextField1;
+    private JLabel jLabel1,jLabel2,jLabel3,jLabel4;
+    private JTextField jTextField1,jTextField3;
     private JPasswordField jPasswordField;
-    private JTextField jTextField3;
     private JButton jButton1;
     private JButton jButton2;
     private JPanel jPanel1;

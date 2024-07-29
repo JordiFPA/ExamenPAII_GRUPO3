@@ -43,8 +43,8 @@ public class Productos extends JFrame {
 
     private void initComponents() {
 
-        jButton6 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        jButton6 = new JButton();
+        jLabel1 = new JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -145,14 +145,12 @@ public class Productos extends JFrame {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 3, 16)); // NOI18N
-        jLabel3.setText("Cantidad:");
 
         jTextField1.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
 
         tableModel = new DefaultTableModel(
                 new Object[][]{},
-                new String[]{"NOMBRE", "MATERIAL", "CANTIDAD"}
+                new String[]{"NOMBRE", "MATERIAL"}
         );
 
         jTable2.setModel(tableModel);
@@ -300,8 +298,8 @@ public class Productos extends JFrame {
 
     private void agregarProductoActionPerformed(java.awt.event.ActionEvent evt) {
         String cantidad = jTextField1.getText();
-        if (!producto.isEmpty() && !material.equals("SELECCIONE") && !cantidad.isEmpty()) {
-            tableModel.addRow(new Object[]{producto, material, cantidad});
+        if (!producto.isEmpty() && !material.equals("SELECCIONE")) {
+            tableModel.addRow(new Object[]{producto, material});
             producto = "";
             jComboBox1.setSelectedIndex(0);
             jTextField1.setText("");
@@ -318,9 +316,7 @@ public class Productos extends JFrame {
             for (int i = 0; i < rowCount; i++) {
                 String nombre = (String) tableModel.getValueAt(i, 0);
                 String material = (String) tableModel.getValueAt(i, 1);
-                double precio = 0.0; // Ajusta el precio según corresponda
-                int cantidad = Integer.parseInt((String) tableModel.getValueAt(i, 2));
-                Product product = new Product(precio, nombre, material, cantidad); // Ajusta los parámetros al constructor correcto
+                Product product = new Product(nombre, material); // Ajusta los parámetros al constructor correcto
 
                 // Si el producto ya existe en la base de datos, obtén su ID
                 Product existingProduct = productService.getProductByNameAndMaterial(nombre, material); // Debes crear este método en ProductService y ProductRepository
