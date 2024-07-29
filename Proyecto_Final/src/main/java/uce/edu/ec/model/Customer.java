@@ -1,11 +1,9 @@
 package uce.edu.ec.model;
 
 import jakarta.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class Customer {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

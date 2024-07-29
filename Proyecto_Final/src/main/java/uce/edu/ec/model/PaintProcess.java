@@ -7,7 +7,6 @@ public class PaintProcess implements IPaint {
 
     @Override
     public void paint(Runnable updateProgress) {
-        System.out.println("Iniciando Pintado...");
         try {
             // Simula el tiempo de corte
             Thread.sleep(10000); // 10 segundos para el corte
@@ -15,6 +14,5 @@ public class PaintProcess implements IPaint {
             e.printStackTrace();
         }
         updateProgress.run();
-        System.out.println("Pintado realizado.");
     }
 }

@@ -101,7 +101,6 @@ public class CrearCuenta extends JFrame {
         jPasswordField.setPreferredSize(textFieldSize);
         jTextField3.setPreferredSize(textFieldSize);
 
-        // Crear bordes de colores
         Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);
 
         jButton1.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -135,8 +134,6 @@ public class CrearCuenta extends JFrame {
                     validateFields();
                     container.registerCustomer(jTextField1.getText(), jTextField3.getText(), new String(jPasswordField.getPassword()));
                     JOptionPane.showMessageDialog(null, "Cuenta creada exitosamente");
-
-                    // Limpiar los campos de texto después de crear la cuenta
                     clearFields();
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -154,7 +151,6 @@ public class CrearCuenta extends JFrame {
                 }
             }
         });
-
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(

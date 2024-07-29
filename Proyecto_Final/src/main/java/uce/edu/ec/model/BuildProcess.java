@@ -7,7 +7,6 @@ import uce.edu.ec.interfaces.IBuildable;
 public class BuildProcess implements IBuildable {
     @Override
     public void build(Runnable updateProgress) {
-        System.out.println("Iniciando corte...");
         try {
             // Simula el tiempo de corte
             Thread.sleep(20000); // 2 segundos para el corte
@@ -15,6 +14,5 @@ public class BuildProcess implements IBuildable {
             e.printStackTrace();
         }
         updateProgress.run();
-        System.out.println("Corte realizado.");
     }
 }

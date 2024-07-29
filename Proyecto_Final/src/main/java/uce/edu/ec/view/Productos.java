@@ -130,7 +130,15 @@ public class Productos extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                producto = "CAMA";
+                while (producto.isEmpty()) {
+                    producto = JOptionPane.showInputDialog(null, "Ingrese el nombre del producto");
+                    if (producto != null) {
+                        producto = producto.trim().toUpperCase(); // Elimina espacios en blanco y convierte a mayúsculas
+                    }
+                    if (producto.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "El nombre del producto no puede estar vacío. Por favor, ingrese un valor.");
+                    }
+                }
 
             }
         });
@@ -297,7 +305,6 @@ public class Productos extends JFrame {
     }
 
     private void agregarProductoActionPerformed(java.awt.event.ActionEvent evt) {
-        String cantidad = jTextField1.getText();
         if (!producto.isEmpty() && !material.equals("SELECCIONE")) {
             tableModel.addRow(new Object[]{producto, material});
             producto = "";

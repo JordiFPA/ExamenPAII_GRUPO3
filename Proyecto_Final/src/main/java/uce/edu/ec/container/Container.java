@@ -106,7 +106,6 @@ public class Container implements Observable {
             statusUpdater.accept("Orden no encontrada.");
             return;
         }
-
         // Actualizar el estado a "Fabricando"
         order.setStatus("Fabricando");
         orderService.saveOrder(order);  // Asegurarse de guardar el estado actualizado en la base de datos
@@ -196,7 +195,6 @@ public class Container implements Observable {
     @Override
     public void removeObserver(Observer observer) {
         observers.remove(observer);
-
     }
 
     @Override

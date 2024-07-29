@@ -22,25 +22,18 @@ public class FrameAdmin extends javax.swing.JFrame {
 
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jLabel1 = new JLabel();
+        jButton1 = new JButton();
+        jButton2 = new JButton();
+        jButton3 = new JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-
         Border buttonBorder1 = BorderFactory.createLineBorder(new Color(246, 195, 67), 2);
-
-        // Cambiar el color de fondo de la ventana
-        Color fondoColor = new Color(255, 255, 153); // Color de fondo deseado
+        Color fondoColor = new Color(255, 255, 153);
         getContentPane().setBackground(fondoColor);
-
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/logoProgra.jpg"))); // NOI18N
-
-        // Configurar los botones con el mismo tamaño y apariencia
         Dimension buttonSize = new Dimension(200, 50);
-
         jButton1.setText("VENTAS");
         jButton1.setPreferredSize(buttonSize);
         jButton1.setBackground(Color.WHITE);
@@ -90,8 +83,6 @@ public class FrameAdmin extends javax.swing.JFrame {
                 dispose();
             }
         });
-
-        // Configurar el diseño usando GroupLayout para centrar los botones
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -123,19 +114,6 @@ public class FrameAdmin extends javax.swing.JFrame {
 
         pack();
     }
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -144,10 +122,9 @@ public class FrameAdmin extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
-    // End of variables declaration
+
 }
